@@ -1,0 +1,28 @@
+{% load static %}
+<html>
+<link rel="stylesheet"  href="{% static 'css/1.css' %}">
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="{% static 'scripts/annotation.js' %}"></script>
+<script type="text/javascript">
+	
+</script>
+<body onload="init()">
+	<div class="wrapper">
+		<div id="div1">
+			<canvas id="drawCanvas"></canvas>
+			<canvas id="selectCanvas" style="visibility: hidden;"></canvas>
+		</div>
+	</div>
+	<div id="div2" style="clear: both;">
+		<input type="button" value="save" id="btn" size="30"
+			onclick="saveFile()"> <input type="button" value="clear"
+			id="clr" size="23" onclick="clearCanvas()">
+		<button id="btnOpenFile1">Load</button>
+		<input id="fileInput1" type="file" name="name" style="display: none;" />
+		<input type="button" value="select" id="select" size="23"
+			onclick="beginSelect()">
+	</div>
+
+</body>
+</html>
