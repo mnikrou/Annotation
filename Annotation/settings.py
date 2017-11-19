@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'Annotation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST' : '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST' : 'localhost',
         'NAME': 'annotation',
-        'PORT' : 3306,
-        'USER' : 'root',
+        'PORT' : '',
+        'USER' : 'postgres',
         'PASSWORD' : 123456
     }
 }
