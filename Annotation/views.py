@@ -3,8 +3,8 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 
 
-def index(request):
-    template = loader.get_template('home.html')
+def login(request):
+    template = loader.get_template('login.html')
     return HttpResponse(template.render())
 
 @login_required
