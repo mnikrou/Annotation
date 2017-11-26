@@ -1,23 +1,92 @@
 <!DOCTYPE html>
-<html>
+{% load static %}
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}Annotation Application{% endblock %}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <title>Blood Vessel Annotation</title>
+    <!-- BOOTSTRAP CORE STYLE  -->
+    <link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FONT AWESOME STYLE  -->
+    <link href="{% static 'css/fonts/font-awesome.css' %}" rel="stylesheet" />
+    <!-- CUSTOM STYLE  -->
+    <link href="{% static 'css/layout/style.css' %}" rel="stylesheet" />
+
 </head>
 <body>
-  <header>
-    {% if user.is_authenticated %}
-      Hi {{ user.username }}!
-      <a href="{% url 'logout' %}">logout</a>
-    {% else %}
-      <a href="{% url 'login' %}">login</a>
-    {% endif %}
-  </header>
-  <hr>
-  <main>
-    {% block content %}
-    {% endblock %}
-  </main>
-  <hr>
+    <div class="navbar navbar-inverse set-radius-zero" >
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">
+
+                    <img src="" />
+                </a>
+
+            </div>
+
+            <div class="right-div">
+                <a href="{% url 'logout' %}" class="btn btn-info pull-right">LOG OUT</a>
+            </div>
+        </div>
+    </div>
+    <!-- LOGO HEADER END-->
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse ">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <li><a href="{% url 'cpanel' %}" >Dashboard</a></li>
+                            <li><a href="{% url 'draw' %}" >Draw</a></li>
+                            <li><a href="{% url 'home' %}" class="menu-top-active">Home</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+     <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="content">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+     <!-- CONTENT-WRAPPER SECTION END-->
+    <section class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                   &copy; 2014 Yourdomain.com |<a href="http://www.binarytheme.com/" target="_blank"  > Designed by : binarytheme.com</a> 
+                </div>
+
+            </div>
+        </div>
+    </section>
+      <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY  -->
+    <script src="{% static 'scripts/layout/jquery-1.10.2.js' %}"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="{% static 'scripts/layout/bootstrap.js' %}"></script>
+      <!-- CUSTOM SCRIPTS  -->
+    <script src=="{% static 'scripts/layout/custom.js' %}"></script>
 </body>
 </html>

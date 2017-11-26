@@ -8,6 +8,16 @@ def login(request):
     return HttpResponse(template.render())
 
 @login_required
+def home(request):
+    template = loader.get_template('home.html')
+    return HttpResponse(template.render())
+
+@login_required
 def draw(request):
     template = loader.get_template('draw.html')
+    return HttpResponse(template.render())
+
+@login_required
+def cpanel(request):
+    template = loader.get_template('cpanel.html')
     return HttpResponse(template.render())

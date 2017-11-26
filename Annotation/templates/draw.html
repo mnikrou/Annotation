@@ -1,6 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
-<html>
-<link rel="stylesheet"  href="{% static 'css/1.css' %}">
+{% block content %}
+<link rel="stylesheet"  href="{% static 'css/annotation.css' %}">
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script src="{% static 'scripts/annotation.js' %}"></script>
@@ -25,4 +26,4 @@
 	</div>
 
 </body>
-</html>
+{% endblock %}
