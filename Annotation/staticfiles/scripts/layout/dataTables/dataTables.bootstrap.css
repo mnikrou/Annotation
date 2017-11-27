@@ -55,7 +55,7 @@ table.dataTable thead .sorting_desc_disabled {
 }
 
 table.dataTable thead .sorting {
-    background: url('../../../images/layout/sort_both.png') no-repeat center right;
+    background: url('img/layout/sort_both.png') no-repeat center right;
 }
 
 table.dataTable thead .sorting_asc {
