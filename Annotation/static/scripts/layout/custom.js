@@ -42,7 +42,7 @@
    
     $(document).ready(function () {
         mainApp.slide_fun();
-        mainApp.dataTable_fun();
+        //mainApp.dataTable_fun();
         mainApp.custom_fun();
     });
 }(jQuery));
