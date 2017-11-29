@@ -19,7 +19,7 @@
 				</div>
 
 				<div class="login-form">
-					<form method="post" action="/login/">
+					<form method="post" action="">
 						{% csrf_token %}
 						{{form.as_p}}
 						<button class="btn btn-primary btn-large btn-block" type="submit">login</button>
