@@ -2,6 +2,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from Annotation import views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -11,4 +13,6 @@ urlpatterns = [
     url(r'^home/', views.home, name='home'),
     url(r'^cpanel/', views.cpanel, name='cpanel'),
     url(r'^draw/', views.draw, name='draw'),
-]
+    url(r'^images/', views.images, name='images'),
+    url(r'^upload_image/', views.upload_image, name='upload_image'),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
