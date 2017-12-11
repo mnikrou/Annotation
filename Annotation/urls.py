@@ -15,4 +15,7 @@ urlpatterns = [
     url(r'^draw/', views.draw, name='draw'),
     url(r'^images/', views.images, name='images'),
     url(r'^upload_image/', views.upload_image, name='upload_image'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG is True:
+   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
