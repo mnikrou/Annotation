@@ -1,6 +1,6 @@
 var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, 
 painting = false, lastX = 0, lastY = 0, startX, startY, lineThickness = 2, lineColor = "yellow", selectStartX
-, selectStartY, selectMouseX, selectMouseY, rect = null, drag = false, selectMode = false, shape = []
+, selectStartY, selectMouseX, selectMouseY, rect = null, drag = false, selectMode = false, edges = []
 , snappingDistance = 10, shiftClick, drawCanvasOffsetLeft, drawCanvasOffsetTop, selectCanvasOffsetLeft, selectCanvasOffsetTop;
 
 function Point(x, y) {
@@ -8,14 +8,14 @@ function Point(x, y) {
 	this.y = y;
 }
 
-function AnnotationObject(name, shape) {
-	this.name = name;
-	this.shape = shape;
+function AnnotationObject(name, edges) {
+	//this.name = name;
+	this.edges = edges;
 }
 
 function Line(startPoint, endPoint) {
-	this.startPoint = startPoint;
-	this.endPoint = endPoint;
+	this.start = startPoint;
+	this.end = endPoint;
 }
 
 var res = window.devicePixelRatio || 1;
@@ -82,7 +82,7 @@ function init() {
 		reader.onload = function(e) {
 			var contents = e.target.result;
 			var arr = JSON.parse(contents);
-			shape = arr.shape;
+			edges = arr.edges;
 			updateCanvas();
 		};
 		reader.readAsText(file);
@@ -97,6 +97,7 @@ function drawCanvasHandleMouse(act, e) {
 	if (!selectMode) {
 		e.preventDefault();
 		e.stopPropagation();
+
 		switch (act) {
 		case 'down':
 			switch (e.button) {
@@ -105,12 +106,12 @@ function drawCanvasHandleMouse(act, e) {
 					sPoint = new Point(startX, startY);
 					ePoint = new Point(lastX, lastY);
 					line = new Line(sPoint, ePoint);
-					shape.push(line);
+					edges.push(line);
 					startX = lastX;
 					startY = lastY;
 				} else {
-					startX = e.pageX - drawCanvasOffsetLeft;
-					startY = e.pageY - drawCanvasOffsetTop;
+					startX = e.pageX;
+					startY = e.pageY;
 					var p = new Point(startX, startY);
 					var res = JSON.parse(validateNewPoint(p));
 					if (!res.result) {
@@ -147,8 +148,8 @@ function drawCanvasHandleMouse(act, e) {
 			break;
 		case 'move':
 			if (painting) {
-				lastX = e.pageX - drawCanvasOffsetLeft;
-				lastY = e.pageY - drawCanvasOffsetTop;
+				lastX = e.pageX;
+				lastY = e.pageY;
 				updateCanvas()
 				sp = new Point(startX, startY);
 				ep = new Point(lastX, lastY)
@@ -220,8 +221,8 @@ function selectCanvasHandleMouse(act, e) {
 
 function updateCanvas() {
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-	shape.forEach(function(line) {
-		draw(line.startPoint, line.endPoint);
+	edges.forEach(function(line) {
+		draw(line.start, line.end);
 	});
 }
 
@@ -260,19 +261,19 @@ function calculateDistance(point1, point2) {
 function validateNewPoint(point) {
 	var result = '{"result":false,"point":""}';
 	var selectedPoint = null;
-	if (shape && shape.length > 0) {
-		shape.forEach(function(line) {
-			disS = calculateDistance(line.startPoint, point);
-			disE = calculateDistance(line.endPoint, point);
+	if (edges && edges.length > 0) {
+		edges.forEach(function(line) {
+			disS = calculateDistance(line.start, point);
+			disE = calculateDistance(line.end, point);
 			if (disS <= snappingDistance) {
 				result = '{"result":true,"point":'
-						+ JSON.stringify(line.startPoint) + '}';
-				selectedPoint = line.startPoint;
+						+ JSON.stringify(line.start) + '}';
+				selectedPoint = line.start;
 				return true;
 			} else if (disE <= snappingDistance) {
 				result = '{"result":true,"point":'
-						+ JSON.stringify(line.endPoint) + '}';
-				selectedPoint = line.endPoint;
+						+ JSON.stringify(line.end) + '}';
+				selectedPoint = line.end;
 				return true;
 			}
 		});
@@ -292,7 +293,7 @@ function highLightPoint(point) {
 }
 
 function saveFile() {
-	var ann = new AnnotationObject("test", shape);
+	var ann = new AnnotationObject("test", edges);
 	var data = JSON.stringify(ann);
 
 	var csvContent = "data:text/csv;charset=utf-8,";
