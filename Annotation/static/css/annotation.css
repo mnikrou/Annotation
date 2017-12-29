@@ -6,20 +6,5 @@
 .wrapper canvas {
     position: absolute;
     top: 0;
-    left: 0;
-}
-
-.div1 {
-    margin: 0px auto;
-    margin-top: 10px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-.div2 {
-    display: table;
-    overflow: hidden;
-    padding: 0px;
-    margin: 0 auto;
-    visibility: visible;
+    left: 45%;
 }

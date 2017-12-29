@@ -10,20 +10,21 @@
 </script>
 <body onload="init()">
 	<div class="wrapper">
-		<div id="div1">
-			<canvas id="drawCanvas"></canvas>
-			<canvas id="selectCanvas" style="visibility: hidden;"></canvas>
+		<div style="text-align: center;">
+			<div id="dvCanvasContainer">
+				<canvas id="drawCanvas"></canvas>
+				<canvas id="selectCanvas" style="visibility: hidden;"></canvas>
+			</div>
+			<div style="display: inline-block; width:70px;">
+				<input type="button" value="save" id="btn" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="saveFile()">
+				<input type="button" value="clear" id="clr" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="clearCanvas()">
+				<button id="btnOpenFile1" class="btn btn-primary" style="width:60px; margin-bottom:5px;">Load</button>
+				<input id="fileInput1" type="file" name="name" style="display: none;" />
+				<input type="button" value="select" id="select" class="btn btn-primary" style="width:60px;" onclick="beginSelect()">
+			</div>
 		</div>
-	</div>
-	<div id="div2" style="clear: both;">
-		<input type="button" value="save" id="btn" size="30"
-			onclick="saveFile()"> <input type="button" value="clear"
-			id="clr" size="23" onclick="clearCanvas()">
-		<button id="btnOpenFile1">Load</button>
-		<input id="fileInput1" type="file" name="name" style="display: none;" />
-		<input type="button" value="select" id="select" size="23"
-			onclick="beginSelect()">
-	</div>
 
+	</div>
+	<span>{{ imagesCount }}</span>
 </body>
 {% endblock %}

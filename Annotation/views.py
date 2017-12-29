@@ -17,7 +17,8 @@ def home(request):
 @login_required
 def draw(request):
     template = loader.get_template('draw.html')
-    return HttpResponse(template.render())
+    c = {'imagesCount': Image.objects.count()}
+    return HttpResponse(template.render(c, request))
 
 @login_required
 def cpanel(request):

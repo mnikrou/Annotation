@@ -22,11 +22,13 @@ var res = window.devicePixelRatio || 1;
 
 function init() {
 	drawCanvas = document.getElementById("drawCanvas");
+	dvCanvasContainer = document.getElementById("dvCanvasContainer");
 	drawCtx = drawCanvas.getContext("2d");
 	drawCanvas.width = 600;
 	drawCanvas.height = 400;
 	drawCanvas.width *= res;
 	drawCanvas.height *= res;
+	dvCanvasContainer.setAttribute("style","width:"+drawCanvas.width+"px;height:"+drawCanvas.height+"px;display: inline-block;vertical-align: top;");
 	drawCanvas.style.backgroundImage = "url('../static/images/2.jpg')";
 
 	selectCanvas = document.getElementById("selectCanvas");
@@ -35,6 +37,9 @@ function init() {
 	selectCanvas.height = 400;
 	selectCanvas.width *= res;
 	selectCanvas.height *= res;
+
+	drawCanvas.style.marginLeft = -1*(drawCanvas.width/2)+"px";
+	selectCanvas.style.marginLeft = -1*(selectCanvas.width/2)+"px";
 	
 	reOffset();
 	
@@ -110,8 +115,8 @@ function drawCanvasHandleMouse(act, e) {
 					startX = lastX;
 					startY = lastY;
 				} else {
-					startX = e.pageX;
-					startY = e.pageY;
+					startX = e.clientX - drawCanvasOffsetLeft;
+					startY = e.clientY - drawCanvasOffsetTop;
 					var p = new Point(startX, startY);
 					var res = JSON.parse(validateNewPoint(p));
 					if (!res.result) {
@@ -148,8 +153,8 @@ function drawCanvasHandleMouse(act, e) {
 			break;
 		case 'move':
 			if (painting) {
-				lastX = e.pageX;
-				lastY = e.pageY;
+				lastX = e.clientX - drawCanvasOffsetLeft;;
+				lastY = e.clientY - drawCanvasOffsetTop;
 				updateCanvas()
 				sp = new Point(startX, startY);
 				ep = new Point(lastX, lastY)
@@ -157,8 +162,8 @@ function drawCanvasHandleMouse(act, e) {
 			} else {
 				if (e.shiftKey) {
 					updateCanvas();
-					pX = e.pageX - drawCanvasOffsetLeft;
-					pY = e.pageY - drawCanvasOffsetTop;
+					pX = e.clientX - drawCanvasOffsetLeft;
+					pY = e.clientY - drawCanvasOffsetTop;
 					var p = new Point(pX, pY);
 					var res = JSON.parse(validateNewPoint(p));
 					if (!res.result) {
