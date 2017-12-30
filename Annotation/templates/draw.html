@@ -1,13 +1,29 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
-<link rel="stylesheet"  href="{% static 'css/annotation.css' %}">
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+{% extends 'base.html' %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/annotation.css' %}">
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script src="{% static 'scripts/annotation.js' %}"></script>
 <script type="text/javascript">
-	
+	$(document).ready(function () {
+		showImage();
+		
+		function showImage() {
+			$.ajax({
+				type: 'POST',
+				url: 'get_image/',
+				data: {
+					'page_num': 1
+				},
+				success: function (data) {
+					alert("Congratulations! You scored: " + data);
+				},
+				error: function (xhr, textStatus, errorThrown) {
+					alert("Please report this error: ");
+				}
+			});
+		}
+	});
 </script>
+
 <body onload="init()">
 	<div class="wrapper">
 		<div style="text-align: center;">

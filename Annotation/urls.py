@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^draw/', views.draw, name='draw'),
     url(r'^images/', views.images, name='images'),
     url(r'^upload_image/', views.upload_image, name='upload_image'),
+    url(r'^get_image/', views.get_image, name='get_image'),
 ]
 
 if settings.DEBUG is True:

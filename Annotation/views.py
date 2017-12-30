@@ -2,8 +2,9 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.template import loader, RequestContext
 from django.contrib.auth.decorators import login_required
 from .forms import ImageUploadForm
-from .models import Image
-
+from .models import *
+from django.core.serializers import serialize
+from .images import *
 
 def login(request):
     template = loader.get_template('login.html')
@@ -42,4 +43,12 @@ def upload_image(request):
             m.save()
             return images(request)
     return HttpResponseForbidden('allowed only via POST')
+
+@login_required
+def get_image(request):
+    if request.is_ajax():
+        img = get_image_by_page_number(int(request.POST['page_num']))
+        json_img = serialize('json', img)
+        return HttpResponse(json_img)
+    return HttpResponseForbidden('allowed only via Ajax')
     
