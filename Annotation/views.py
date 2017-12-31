@@ -1,9 +1,9 @@
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.template import loader, RequestContext
 from django.contrib.auth.decorators import login_required
 from .forms import ImageUploadForm
 from .models import *
-from django.core.serializers import serialize
+from django.core import serializers
 from .images import *
 
 def login(request):
@@ -18,6 +18,7 @@ def home(request):
 @login_required
 def draw(request):
     template = loader.get_template('draw.html')
+    img = serializers.serialize('json', Image.objects.all())
     c = {'imagesCount': Image.objects.count()}
     return HttpResponse(template.render(c, request))
 
@@ -48,7 +49,7 @@ def upload_image(request):
 def get_image(request):
     if request.is_ajax():
         img = get_image_by_page_number(int(request.POST['page_num']))
-        json_img = serialize('json', img)
-        return HttpResponse(json_img)
+        #data = serializers.serialize('json', img.object_list[0].img.url)
+        return HttpResponse(img.object_list[0].img.url)
     return HttpResponseForbidden('allowed only via Ajax')
     

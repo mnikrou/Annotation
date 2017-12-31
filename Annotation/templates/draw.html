@@ -1,30 +1,34 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/annotation.css' %}">
+<link href="{% static 'css/layout/cpanel-font-awesome.css' %}" rel="stylesheet" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script src="{% static 'scripts/annotation.js' %}"></script>
 <script type="text/javascript">
+	pageNumber = 1;
 	$(document).ready(function () {
 		showImage();
-		
+		document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
+
 		function showImage() {
 			$.ajax({
 				type: 'POST',
-				url: 'get_image/',
+				url: '/get_image/',
 				data: {
-					'page_num': 1
+					'page_num': pageNumber,
+					csrfmiddlewaretoken: '{{ csrf_token }}',
 				},
 				success: function (data) {
-					alert("Congratulations! You scored: " + data);
+					initCanvas(data);
 				},
 				error: function (xhr, textStatus, errorThrown) {
-					alert("Please report this error: ");
+					alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
 				}
 			});
 		}
 	});
 </script>
 
-<body onload="init()">
+<body>
 	<div class="wrapper">
 		<div style="text-align: center;">
 			<div id="dvCanvasContainer">
@@ -41,6 +45,15 @@
 		</div>
 
 	</div>
-	<span>{{ imagesCount }}</span>
+	<br/>
+	<div style="text-align: center;">
+		<button class="btn">
+			<i class="icon-step-backward"></i>
+		</button>
+		<span id="spnPaging"></span>
+		<button class="btn">
+			<i class="icon-step-forward"></i>
+		</button>
+	</div>
 </body>
 {% endblock %}
