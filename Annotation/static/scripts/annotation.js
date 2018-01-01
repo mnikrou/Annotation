@@ -29,6 +29,7 @@ function Line(startPoint, endPoint) {
 var res = window.devicePixelRatio || 1;
 
 function initCanvas(imageUrl) {
+	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	dvCanvasContainer = document.getElementById("dvCanvasContainer");
 	drawCtx = drawCanvas.getContext("2d");
@@ -48,6 +49,8 @@ function initCanvas(imageUrl) {
 
 	drawCanvas.style.marginLeft = (-1 * (drawCanvas.width / 2)) + 15 + "px";
 	selectCanvas.style.marginLeft = -1 * (selectCanvas.width / 2) + "px";
+
+	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
 	reOffset();
 
@@ -258,6 +261,7 @@ function draw(sPoint, ePoint) {
 }
 
 function clearCanvas() {
+	edges = [];
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 }
 

@@ -6,8 +6,19 @@
 <script type="text/javascript">
 	pageNumber = 1;
 	$(document).ready(function () {
+		$("#btnNext").click(function (e) {
+			if (pageNumber < $("#pageCount").val())
+				pageNumber += 1;
+			showImage();
+		});
+
+		$("#btnPrevious").click(function (e) {
+			if (pageNumber > 1)
+				pageNumber -= 1;
+			showImage();
+		});
+
 		showImage();
-		document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
 
 		function showImage() {
 			$.ajax({
@@ -19,6 +30,7 @@
 				},
 				success: function (data) {
 					initCanvas(data);
+					document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
 				},
 				error: function (xhr, textStatus, errorThrown) {
 					alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
@@ -46,12 +58,13 @@
 
 	</div>
 	<br/>
+	<input id="pageCount" type="hidden" value="{{imagesCount}}">
 	<div style="text-align: center;">
-		<button class="btn">
+		<button class="btn" id="btnPrevious">
 			<i class="icon-step-backward"></i>
 		</button>
-		<span id="spnPaging"></span>
-		<button class="btn">
+		<span id="spnPaging" style="margin-right: 5px; margin-left: 5px"></span>
+		<button class="btn" id="btnNext">
 			<i class="icon-step-forward"></i>
 		</button>
 	</div>
