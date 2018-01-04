@@ -36,7 +36,7 @@ def images(request):
     return HttpResponse(template.render(c, request))
 
 @login_required
-def upload_image(request):
+def save_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -44,6 +44,11 @@ def upload_image(request):
             m.save()
             return images(request)
     return HttpResponseForbidden('allowed only via POST')
+
+@login_required
+def upload_image(request):
+    template = loader.get_template('upload_image.html')
+    return HttpResponse(template.render())
 
 @login_required
 def get_image(request):

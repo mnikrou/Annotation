@@ -14,8 +14,9 @@ urlpatterns = [
     url(r'^cpanel/', views.cpanel, name='cpanel'),
     url(r'^draw/', views.draw, name='draw'),
     url(r'^images/', views.images, name='images'),
-    url(r'^upload_image/', views.upload_image, name='upload_image'),
+    url(r'^save_image/', views.save_image, name='save_image'),
     url(r'^get_image/$', views.get_image, name='get_image'),
+    url(r'^upload_image/', views.upload_image, name='upload_image'),
 ]
 
 if settings.DEBUG is True:

@@ -9,13 +9,11 @@
     <hr />
     <div class="row">
         <div class="body collapse in">
-            <form action="{% url 'upload_image' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div style="margin-left: 61px;">
-                    <input id="id_image" type="file" style="margin-bottom: 10px;"  name="image">
-                    <input type="submit"  class="btn btn-primary" value="Submit" />
-                </div>
-            </form>
+            <div style="margin-left: 61px;">
+                <li>
+                    <a href="{% url 'upload_image' %}" class="menu-top-active">Home</a>
+                </li>
+            </div>
         </div>
         <br/> {% if images %}
         <p style="text-align:center">
