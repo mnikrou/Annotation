@@ -5,6 +5,7 @@ from .forms import ImageUploadForm
 from .models import *
 from django.core import serializers
 from .images import *
+from django.shortcuts import render, redirect
 
 def login(request):
     template = loader.get_template('login.html')
@@ -31,24 +32,20 @@ def cpanel(request):
 @login_required
 def images(request):
     template = loader.get_template('images.html')
-    form = ImageUploadForm(request.POST, request.FILES)
-    c = {'images': Image.objects.all(), 'form': form}
-    return HttpResponse(template.render(c, request))
+    c = {'images': Image.objects.all()}
+    return HttpResponse(template.render(c))
 
 @login_required
-def save_image(request):
+def upload_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             m = Image(img = form.cleaned_data['image'])
             m.save()
-            return images(request)
-    return HttpResponseForbidden('allowed only via POST')
-
-@login_required
-def upload_image(request):
-    template = loader.get_template('upload_image.html')
-    return HttpResponse(template.render())
+        return redirect('images')
+    else:
+        form = ImageUploadForm()
+    return render(request, 'upload_image.html', { 'form': form })
 
 @login_required
 def get_image(request):

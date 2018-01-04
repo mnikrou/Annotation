@@ -9,7 +9,7 @@
     <hr />
     <div class="row">
         <div class="body collapse in">
-            <form action="{% url 'save_image' %}" method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div style="margin-left: 61px;">
                     <input id="id_image" type="file" style="margin-bottom: 10px;"  name="image">
