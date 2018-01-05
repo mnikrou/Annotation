@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^images/', views.images, name='images'),
     url(r'^upload/img/$', views.upload_image, name='upload_image'),
     url(r'^get_image/$', views.get_image, name='get_image'),
+    url(r'^load_images/$', views.load_images, name='load_images'),
 ]
 
 if settings.DEBUG is True:

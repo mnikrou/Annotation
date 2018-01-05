@@ -50,8 +50,15 @@ def upload_image(request):
 @login_required
 def get_image(request):
     if request.is_ajax():
-        img = get_image_by_page_number(int(request.POST['page_num']))
+        img = get_image_by_page_number(int(request.POST['page_num']), 1)
         #data = serializers.serialize('json', img.object_list[0].img.url)
         return HttpResponse(img.object_list[0].img.url)
     return HttpResponseForbidden('allowed only via Ajax')
     
+@login_required
+def load_images(request):
+    if request.is_ajax():
+        images = get_image_by_page_number(int(request.POST['page_num']), 10)
+        #data = serializers.serialize('json', img.object_list[0].img.url)
+        return HttpResponse(images.object_list)
+    return HttpResponseForbidden('allowed only via Ajax')
