@@ -6,6 +6,7 @@ from .models import *
 from django.core import serializers
 from .images import *
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 
 def login(request):
     template = loader.get_template('login.html')
@@ -19,7 +20,6 @@ def home(request):
 @login_required
 def draw(request):
     template = loader.get_template('draw.html')
-    img = serializers.serialize('json', Image.objects.all())
     c = {'imagesCount': Image.objects.count()}
     return HttpResponse(template.render(c, request))
 
@@ -33,7 +33,7 @@ def cpanel(request):
 def images(request):
     template = loader.get_template('images.html')
     c = {'images': Image.objects.all()}
-    return HttpResponse(template.render(c))
+    return HttpResponse(template.render(c, request))
 
 @login_required
 def upload_image(request):
@@ -58,7 +58,7 @@ def get_image(request):
 @login_required
 def load_images(request):
     if request.is_ajax():
-        images = get_image_by_page_number(int(request.POST['page_num']), 10)
+        images = get_image_by_page_number(int(request.POST['page_number']), 10)
         #data = serializers.serialize('json', img.object_list[0].img.url)
         return HttpResponse(images.object_list)
     return HttpResponseForbidden('allowed only via Ajax')

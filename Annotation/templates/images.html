@@ -2,42 +2,29 @@
 <link rel="stylesheet" href="{% static 'css/images.css' %}" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
-    pageNumber = 1;
-    $(document).ready(function () {
-        loadImages();
-        function loadImages() {
+	pageNumber = 1;
+	$(document).ready(function () {
+
+		loadImages();
+
+		function loadImages() {
             $.ajax({
                 type: 'POST',
                 url: '/load_images/',
                 data: {
-                    'page_num': pageNumber,
+                    'page_number': 1,
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                 },
                 success: function (data) {
                     
                 },
                 error: function (xhr, textStatus, errorThrown) {
+                    console.log(pageNumber);
                     alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
                 }
             });
         }
-    });
-
-    function deleteImage(id) {
-        $.ajax({
-            type: 'POST',
-            url: '/delete_image/',
-            data: {
-                'id': id,
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-            },
-            success: function (data) {
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log("error: " + xhr + "-" + textStatus + "-" + errorThrown);
-            }
-        });
-    }
+	});
 </script>
 
 <body>
@@ -54,7 +41,8 @@
                     <a class="btn btn-primary" href="{% url 'upload_image' %}" class="menu-top-active">Add</a>
                 </div>
             </div>
-            <br/> {% if images %}
+            <br/> 
+            {% if images %}
             <div style="margin-left: 60px; width: 100%;">
                 {% for image in images %}
                 <!-- <a class="image" id="{{ image.img.id }}" href="{{ image.img.url }}" title="{{ image.img.id }}">
