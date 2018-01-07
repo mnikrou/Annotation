@@ -60,5 +60,5 @@ def load_images(request):
     if request.is_ajax():
         images = get_image_by_page_number(int(request.POST['page_number']), 10)
         #data = serializers.serialize('json', img.object_list[0].img.url)
-        return HttpResponse(images.object_list)
+        return HttpResponse(serializers.serialize('json', images.object_list))
     return HttpResponseForbidden('allowed only via Ajax')

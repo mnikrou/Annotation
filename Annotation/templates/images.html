@@ -2,12 +2,12 @@
 <link rel="stylesheet" href="{% static 'css/images.css' %}" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
-	pageNumber = 1;
-	$(document).ready(function () {
+    pageNumber = 1;
+    $(document).ready(function () {
 
-		loadImages();
+        loadImages();
 
-		function loadImages() {
+        function loadImages() {
             $.ajax({
                 type: 'POST',
                 url: '/load_images/',
@@ -16,15 +16,24 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                 },
                 success: function (data) {
-                    
+                    jdata=JSON.parse(data);
+                    var imgaesHtml= "";
+                    jdata.forEach(function(rec){
+                        console.log(rec);
+                        imgaesHtml+= '<div class="show-image"><img src="'+rec.fields.img+'" alt="" style="width: 200px; height: 200px; margin-bottom: 5px" />'+
+                                     '<button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" onclick=deleteImage("'+rec.id+'")>'+
+                                     '<a class="icon-eye-open" href="'+rec.fields.img+'"></a>'+
+                                     '</button> <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" /> </div>';
+                        
+                        $("#divImages").html(imgaesHtml);
+                    });
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    console.log(pageNumber);
                     alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
                 }
             });
         }
-	});
+    });
 </script>
 
 <body>
@@ -41,14 +50,10 @@
                     <a class="btn btn-primary" href="{% url 'upload_image' %}" class="menu-top-active">Add</a>
                 </div>
             </div>
-            <br/> 
-            {% if images %}
+            <br/>
+            <!-- {% if images %}
             <div style="margin-left: 60px; width: 100%;">
                 {% for image in images %}
-                <!-- <a class="image" id="{{ image.img.id }}" href="{{ image.img.url }}" title="{{ image.img.id }}">
-                <img src="{{ image.img.url }}" alt="" style="width: 200px; height: 200px; margin-bottom: 5px" />
-                <a href="#" class="delete">Delete</a>
-            </a> -->
                 <div class="show-image">
                     <img src="{{ image.img.url }}" alt="" style="width: 200px; height: 200px; margin-bottom: 5px" />
                     <button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" onclick=deleteImage({{image.id}})>
@@ -60,7 +65,10 @@
             </div>
             {% else %}
             <p>No images.</p>
-            {% endif %}
+            {% endif %} -->
+            <div id="divImages" style="margin-left: 60px; width: 100%;">
+                
+            </div>
         </div>
         <br/>
         <div class="row">
