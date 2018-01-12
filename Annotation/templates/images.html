@@ -4,36 +4,60 @@
 <script type="text/javascript">
     pageNumber = 1;
     $(document).ready(function () {
+        $("#btnNext").click(function (e) {
+			if (pageNumber < $("#spTotalpages").html())
+				pageNumber += 1;
+            loadImages();
+	    });
+
+	    $("#btnPrevious").click(function (e) {
+			if (pageNumber > 1)
+				pageNumber -= 1;
+            loadImages();
+	    });
 
         loadImages();
+    });
 
-        function loadImages() {
+    function loadImages() {
             $.ajax({
                 type: 'POST',
                 url: '/load_images/',
                 data: {
-                    'page_number': 1,
+                    'page_number': pageNumber,
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                 },
                 success: function (data) {
-                    jdata=JSON.parse(data);
-                    var imgaesHtml= "";
-                    jdata.forEach(function(rec){
-                        console.log(rec);
-                        imgaesHtml+= '<div class="show-image"><img src="'+rec.fields.img+'" alt="" style="width: 200px; height: 200px; margin-bottom: 5px" />'+
-                                     '<button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" onclick=deleteImage("'+rec.id+'")>'+
-                                     '<a class="icon-eye-open" href="'+rec.fields.img+'"></a>'+
-                                     '</button> <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" /> </div>';
-                        
-                        $("#divImages").html(imgaesHtml);
-                    });
+                    var imgaesHtml = "";
+                    $("#spPaging").html(pageNumber);
+                    $("#spTotalpages").html(data.total_pages);
+                    $("#divImages").html(data.html);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+                }
+            });
+    }
+
+    function deleteImage(id) {
+        var result = confirm("Are you sure you want to delete image?");
+        if (result) {
+            $.ajax({
+                type: 'POST',
+                url: '/delete_image/',
+                data: {
+                    'id': id,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (data) {
+                    loadImages();
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
                 }
             });
         }
-    });
+    }
 </script>
 
 <body>
@@ -51,32 +75,18 @@
                 </div>
             </div>
             <br/>
-            <!-- {% if images %}
-            <div style="margin-left: 60px; width: 100%;">
-                {% for image in images %}
-                <div class="show-image">
-                    <img src="{{ image.img.url }}" alt="" style="width: 200px; height: 200px; margin-bottom: 5px" />
-                    <button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" onclick=deleteImage({{image.id}})>
-                        <a class="icon-eye-open" href="{{ image.img.url }}"></a>
-                    </button>
-                    <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" />
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <p>No images.</p>
-            {% endif %} -->
-            <div id="divImages" style="margin-left: 60px; width: 100%;">
-                
+            <div id="divImages" style="margin-left: 35px; width: 100%;">
             </div>
         </div>
         <br/>
         <div class="row">
-            <div style="text-align: center;">
+            <div style="text-align: center; margin-bottom: 20px;">
                 <button class="btn" id="btnPrevious">
                     <i class="icon-step-backward"></i>
                 </button>
-                <span id="spnPaging" style="margin-right: 5px; margin-left: 5px"></span>
+                <span id="spPaging" style="margin-right: 5px; margin-left: 5px"></span> 
+                of 
+                <span id="spTotalpages" style="margin-right: 5px; margin-left: 5px"></span>
                 <button class="btn" id="btnNext">
                     <i class="icon-step-forward"></i>
                 </button>
