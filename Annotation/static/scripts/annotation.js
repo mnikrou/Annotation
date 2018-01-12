@@ -5,7 +5,7 @@ var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx,
 	startX, startY, lineThickness = 2,
 	lineColor = "yellow",
 	selectStartX, selectStartY, selectMouseX, selectMouseY, rect = null,
-	drag = false,
+	select = false,
 	selectMode = false,
 	edges = [],
 	snappingDistance = 10,
@@ -200,38 +200,40 @@ function selectCanvasHandleMouse(act, e) {
 		case 'down':
 			selectStartX = parseInt(e.clientX - selectCanvasOffsetLeft);
 			selectStartY = parseInt(e.clientY - selectCanvasOffsetTop);
-			drag = true;
+			validateNewPoint(new Point(selectStartX, selectStartY))
+			//selectPoint();
+			//select = true;
 			break;
 		case 'up':
-			selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-			drag = false;
-			selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
-			endSelect();
+			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+			// select = false;
+			// selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
+			// endSelect();
 			break;
 		case 'out':
-			selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-			drag = false;
+			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+			// select = false;
 			break;
 		case 'move':
-			if (drag) {
-				selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-				selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-				var width = selectMouseX - selectStartX;
-				var height = selectMouseY - selectStartY;
-				rect = {
-					p1: new Point(selectStartX, selectStartY),
-					p2: new Point(selectStartX + width, selectStartY),
-					p3: new Point(selectStartX, selectStartY + height),
-					p4: new Point(selectStartX + width, selectStartY + height)
-				}
+			// if (select) {
+			// 	selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+			// 	selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+			// 	var width = selectMouseX - selectStartX;
+			// 	var height = selectMouseY - selectStartY;
+			// 	rect = {
+			// 		p1: new Point(selectStartX, selectStartY),
+			// 		p2: new Point(selectStartX + width, selectStartY),
+			// 		p3: new Point(selectStartX, selectStartY + height),
+			// 		p4: new Point(selectStartX + width, selectStartY + height)
+			// 	}
 
-				selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
-				selectCtx.strokeStyle = "lightgray";
-				selectCtx.lineWidth = 3;
-				selectCtx.strokeRect(selectStartX, selectStartY, width, height);
-			}
+			// 	selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
+			// 	selectCtx.strokeStyle = "lightgray";
+			// 	selectCtx.lineWidth = 3;
+			// 	selectCtx.strokeRect(selectStartX, selectStartY, width, height);
+			// }
 			break;
 		default:
 			break;
@@ -326,19 +328,25 @@ function saveFile() {
 	link.click();
 }
 
-function beginSelect() {
+function selectPoint(point) {
 	selectMode = true;
 	selectCanvas.style.visibility = 'visible';
+	if (point) {
+		drawCtx.beginPath();
+		drawCtx.arc(point.x, point.y, 7, 0, 2 * Math.PI, false);
+		drawCtx.fillStyle = '#ff3300';
+		drawCtx.fill();
+	}
 }
 
-function endSelect() {
-	selectMode = false;
-	selectCanvas.style.visibility = 'hidden';
-	draw(rect.p1, rect.p2);
-	draw(rect.p1, rect.p3);
-	draw(rect.p3, rect.p4);
-	draw(rect.p2, rect.p4);
-}
+// function endSelect() {
+// 	selectMode = false;
+// 	selectCanvas.style.visibility = 'hidden';
+// 	draw(rect.p1, rect.p2);
+// 	draw(rect.p1, rect.p3);
+// 	draw(rect.p3, rect.p4);
+// 	draw(rect.p2, rect.p4);
+// }
 
 function reOffset() {
 	var bb = drawCanvas.getBoundingClientRect();
