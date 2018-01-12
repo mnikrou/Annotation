@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
-{% load static %}
+﻿<!DOCTYPE html> {% load static %}
 <html lang="en">
+
 <head>
-   
+
     <meta charset="UTF-8" />
     <title>Blood Vessel Annotation</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="" name="description" />
-	<meta content="" name="author" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
 
     <link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/layout/cpanel-main.css' %}" />
@@ -17,24 +17,30 @@
 
 </head>
 
-<body class="padTop53 " >
+<body class="padTop53 ">
 
     <div id="wrap">
 
         <div id="top">
 
             <nav class="navbar navbar-inverse navbar-fixed-top " style="padding-top: 10px;">
-                <a data-original-title="Show/Hide Menu" data-placement="bottom" data-tooltip="tooltip" class="accordion-toggle btn btn-primary btn-sm visible-xs" data-toggle="collapse" href="#menu" id="menu-toggle">
+                <a data-original-title="Show/Hide Menu" data-placement="bottom" data-tooltip="tooltip" class="accordion-toggle btn btn-primary btn-sm visible-xs"
+                    data-toggle="collapse" href="#menu" id="menu-toggle">
                     <i class="icon-align-justify"></i>
                 </a>
                 <!-- LOGO SECTION -->
                 <header class="navbar-header">
 
                     <a href="index.html" class="navbar-brand">
-                    <img src="assets/img/logo.png" alt="" /></a>
+                        <img src="assets/img/logo.png" alt="" />
+                    </a>
                 </header>
                 <!-- END LOGO SECTION -->
                 <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="{% url 'home' %}" class="menu-top-active">Home</a>
+                    </li>
+                </ul>
 
             </nav>
 
@@ -42,10 +48,10 @@
         <!-- END HEADER SECTION -->
 
         <!-- MENU SECTION -->
-       <div id="left">
+        <div id="left">
             <div class="media user-media well-small">
                 <br />
-                <div class="media-body" >
+                <div class="media-body">
                     <h5 class="media-heading"> {{ request.user.username }}</h5>
                 </div>
                 <br />
@@ -54,25 +60,34 @@
             <ul id="menu" class="collapse">
                 <li class="panel">
                     <a href="{% url 'images' %}">
-                        <i class="icon-table"></i> Images  
-                    </a>                   
+                        <i class="icon-table"></i> Images
+                    </a>
                 </li>
                 <li class="panel ">
                     <a href="#" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#component-nav">
-                        <i class="icon-tasks"> </i> UI Elements     
-	   
+                        <i class="icon-tasks"> </i> UI Elements
+
                         <span class="pull-right">
-                          <i class="icon-angle-left"></i>
+                            <i class="icon-angle-left"></i>
                         </span>
                     </a>
                     <ul class="collapse" id="component-nav">
-                       
-                        <li class=""><a href="button.html"><i class="icon-angle-right"></i> Buttons </a></li>
-                        <li class=""><a href="icon.html"><i class="icon-angle-right"></i> Icons </a></li>
+
+                        <li class="">
+                            <a href="button.html">
+                                <i class="icon-angle-right"></i> Buttons </a>
+                        </li>
+                        <li class="">
+                            <a href="icon.html">
+                                <i class="icon-angle-right"></i> Icons </a>
+                        </li>
                     </ul>
                 </li>
                 </li>
-                <li><a href="{% url 'logout' %}"><i class="icon-signin"></i> Log out </a></li>
+                <li>
+                    <a href="{% url 'logout' %}">
+                        <i class="icon-signin"></i> Log out </a>
+                </li>
 
             </ul>
 
@@ -83,22 +98,22 @@
         <div id="content">
             {% block content %}{% endblock %}
         </div>
-       <!--END PAGE CONTENT -->
+        <!--END PAGE CONTENT -->
     </div>
 
-     <!--END MAIN WRAPPER -->
+    <!--END MAIN WRAPPER -->
 
-   <!-- FOOTER -->
+    <!-- FOOTER -->
     <div id="footer">
-        <p>&copy;  Milad Nikrou &nbsp;2018 &nbsp;</p>
+        <p>&copy; Milad Nikrou &nbsp;2018 &nbsp;</p>
     </div>
     <!--END FOOTER -->
-     <!-- GLOBAL SCRIPTS -->
+    <!-- GLOBAL SCRIPTS -->
     <script src="{% static 'scripts/layout/jquery-2.0.3.min.js' %}"></script>
     <script src="{% static 'scripts/layout/bootstrap.min.js' %}"></script>
     <script src="{% static 'scripts/layout/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
     <!-- END GLOBAL SCRIPTS -->
 </body>
-    <!-- END BODY-->
-    
+<!-- END BODY-->
+
 </html>
