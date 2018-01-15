@@ -19,11 +19,10 @@
 		});
 
 		showImage();
-
 		function showImage() {
 			$.ajax({
 				type: 'POST',
-				url: '/get_image/',
+				url: '{{ ajaxUrl }}/get_image/',
 				data: {
 					'page_num': pageNumber,
 					csrfmiddlewaretoken: '{{ csrf_token }}',

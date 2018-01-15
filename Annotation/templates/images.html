@@ -22,7 +22,7 @@
     function loadImages() {
             $.ajax({
                 type: 'POST',
-                url: '/load_images/',
+                url: '{{ ajaxUrl }}/load_images/',
                 data: {
                     'page_number': pageNumber,
                     csrfmiddlewaretoken: '{{ csrf_token }}',

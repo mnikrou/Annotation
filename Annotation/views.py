@@ -8,6 +8,7 @@ from .images import *
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 import json
+import re
 
 def login(request):
     template = loader.get_template('login.html')
@@ -21,7 +22,8 @@ def home(request):
 @login_required
 def draw(request):
     template = loader.get_template('draw.html')
-    c = {'imagesCount': Image.objects.count()}
+    ajax_url = re.sub('/draw/', '', request.path)
+    c = {'imagesCount': Image.objects.count(), 'ajaxUrl' : ajax_url}
     return HttpResponse(template.render(c, request))
 
 @login_required
@@ -33,7 +35,8 @@ def cpanel(request):
 @login_required
 def images(request):
     template = loader.get_template('images.html')
-    c = {}
+    ajax_url = re.sub('/images/', '', request.path)
+    c = {'ajaxUrl' : ajax_url}
     return HttpResponse(template.render(c, request))
 
 @login_required
