@@ -1,11 +1,13 @@
 var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx,
-	painting = false,
+	selectedPoint = null,
+	drawing = false,
 	lastX = 0,
 	lastY = 0,
 	startX, startY, lineThickness = 2,
 	lineColor = "yellow",
 	selectStartX, selectStartY, selectMouseX, selectMouseY, rect = null,
 	select = false,
+	drawingMode = true,
 	selectMode = false,
 	edges = [],
 	snappingDistance = 10,
@@ -39,16 +41,17 @@ function initCanvas(imageUrl) {
 	drawCanvas.height *= res;
 	dvCanvasContainer.setAttribute("style", "width:" + drawCanvas.width + "px;height:" + drawCanvas.height + "px;display: inline-block;vertical-align: top;");
 	drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
+	drawCanvas.style.backgroundRepeat = "no-repeat";
 
-	selectCanvas = document.getElementById("selectCanvas");
-	selectCtx = selectCanvas.getContext("2d");
-	selectCanvas.width = 600;
-	selectCanvas.height = 400;
-	selectCanvas.width *= res;
-	selectCanvas.height *= res;
+	// selectCanvas = document.getElementById("selectCanvas");
+	// selectCtx = selectCanvas.getContext("2d");
+	// selectCanvas.width = 600;
+	// selectCanvas.height = 400;
+	// selectCanvas.width *= res;
+	// selectCanvas.height *= res;
 
 	drawCanvas.style.marginLeft = (-1 * (drawCanvas.width / 2)) + 15 + "px";
-	selectCanvas.style.marginLeft = -1 * (selectCanvas.width / 2) + "px";
+	// selectCanvas.style.marginLeft = (-1 * (selectCanvas.width / 2)) + 15 + "px";
 
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
@@ -73,21 +76,21 @@ function initCanvas(imageUrl) {
 		e.preventDefault();
 	});
 
-	selectCanvas.onmousedown = function (e) {
-		selectCanvasHandleMouse('down', e);
-	};
+	// selectCanvas.onmousedown = function (e) {
+	// 	selectCanvasHandleMouse('down', e);
+	// };
 
-	selectCanvas.onmousemove = function (e) {
-		selectCanvasHandleMouse('move', e);
-	}
+	// selectCanvas.onmousemove = function (e) {
+	// 	selectCanvasHandleMouse('move', e);
+	// }
 
-	selectCanvas.onmouseup = function (e) {
-		selectCanvasHandleMouse('up', e);
-	}
+	// selectCanvas.onmouseup = function (e) {
+	// 	selectCanvasHandleMouse('up', e);
+	// }
 
-	selectCanvas.onmouseout = function (e) {
-		selectCanvasHandleMouse('out', e);
-	}
+	// selectCanvas.onmouseout = function (e) {
+	// 	selectCanvasHandleMouse('out', e);
+	// }
 
 	shiftClick = jQuery.Event("click");
 	shiftClick.shiftKey = true;
@@ -114,14 +117,14 @@ function initCanvas(imageUrl) {
 }
 
 function drawCanvasHandleMouse(act, e) {
-	if (!selectMode) {
-		e.preventDefault();
-		e.stopPropagation();
+	e.preventDefault();
+	e.stopPropagation();
 
-		switch (act) {
-			case 'down':
-				switch (e.button) {
-					case 0: // left click
+	switch (act) {
+		case 'down':
+			switch (e.button) {
+				case 0: // left click
+					if (!selectMode) {
 						if (startX && startY) {
 							sPoint = new Point(startX, startY);
 							ePoint = new Point(lastX, lastY);
@@ -142,32 +145,44 @@ function drawCanvasHandleMouse(act, e) {
 									startX = res.point.x;
 									startY = res.point.y;
 								}
-								painting = true;
+								drawing = true;
 							}
 						}
-						break;
-					case 2: // middle click
-						painting = false;
+					}
+					else {
+						selectStartX = e.clientX - drawCanvasOffsetLeft;
+						selectStartY = e.clientY - drawCanvasOffsetTop;
+						var p = new Point(selectStartX, selectStartY);
+						selectPoint(p);
+					}
+					break;
+				case 2: // middle click
+					if (!selectMode) {
+						drawing = false;
 						/*
 						 * sPoint = new Point(startX, startY); ePoint = new Point(lastX,
 						 * lastY); line = new Line(sPoint, ePoint); if (ePoint !=
 						 * sPoint) shape.push(line);
 						 */
 						resetPoints();
-						break;
-					case 3: // right
-						painting = false;
+					}
+					break;
+				case 3: // right
+					if (!selectMode) {
+						drawing = false;
 						/*
 						 * sPoint = new Point(startX, startY); ePoint = new Point(lastX,
 						 * lastY); line = new Line(sPoint, ePoint); if (ePoint !=
 						 * sPoint) shape.push(line);
 						 */
 						resetPoints();
-						break;
-				}
-				break;
-			case 'move':
-				if (painting) {
+					}
+					break;
+			}
+			break;
+		case 'move':
+			if (!selectMode) {
+				if (drawing) {
 					lastX = e.clientX - drawCanvasOffsetLeft;;
 					lastY = e.clientY - drawCanvasOffsetTop;
 					updateCanvas()
@@ -181,64 +196,64 @@ function drawCanvasHandleMouse(act, e) {
 						pY = e.clientY - drawCanvasOffsetTop;
 						var p = new Point(pX, pY);
 						var res = JSON.parse(validateNewPoint(p));
-						if (!res.result) {}
+						if (!res.result) { }
 					} else {
 						updateCanvas();
 					}
 				}
-				break;
-			default:
-				break;
-		}
-	}
-}
-
-function selectCanvasHandleMouse(act, e) {
-	e.preventDefault();
-	e.stopPropagation();
-	switch (act) {
-		case 'down':
-			selectStartX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			selectStartY = parseInt(e.clientY - selectCanvasOffsetTop);
-			validateNewPoint(new Point(selectStartX, selectStartY))
-			//selectPoint();
-			//select = true;
-			break;
-		case 'up':
-			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-			// select = false;
-			// selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
-			// endSelect();
-			break;
-		case 'out':
-			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-			// select = false;
-			break;
-		case 'move':
-			// if (select) {
-			// 	selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
-			// 	selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
-			// 	var width = selectMouseX - selectStartX;
-			// 	var height = selectMouseY - selectStartY;
-			// 	rect = {
-			// 		p1: new Point(selectStartX, selectStartY),
-			// 		p2: new Point(selectStartX + width, selectStartY),
-			// 		p3: new Point(selectStartX, selectStartY + height),
-			// 		p4: new Point(selectStartX + width, selectStartY + height)
-			// 	}
-
-			// 	selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
-			// 	selectCtx.strokeStyle = "lightgray";
-			// 	selectCtx.lineWidth = 3;
-			// 	selectCtx.strokeRect(selectStartX, selectStartY, width, height);
-			// }
+			}
 			break;
 		default:
 			break;
 	}
 }
+
+// function selectCanvasHandleMouse(act, e) {
+// 	e.preventDefault();
+// 	e.stopPropagation();
+// 	switch (act) {
+// 		case 'down':
+// 			selectStartX = parseInt(e.clientX - selectCanvasOffsetLeft);
+// 			selectStartY = parseInt(e.clientY - selectCanvasOffsetTop);
+// 			validateNewPoint(new Point(selectStartX, selectStartY))
+// 			//selectPoint();
+// 			//select = true;
+// 			break;
+// 		case 'up':
+// 			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+// 			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+// 			// select = false;
+// 			// selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
+// 			// endSelect();
+// 			break;
+// 		case 'out':
+// 			// selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+// 			// selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+// 			// select = false;
+// 			break;
+// 		case 'move':
+// 			// if (select) {
+// 			// 	selectMouseX = parseInt(e.clientX - selectCanvasOffsetLeft);
+// 			// 	selectMouseY = parseInt(e.clientY - selectCanvasOffsetTop);
+// 			// 	var width = selectMouseX - selectStartX;
+// 			// 	var height = selectMouseY - selectStartY;
+// 			// 	rect = {
+// 			// 		p1: new Point(selectStartX, selectStartY),
+// 			// 		p2: new Point(selectStartX + width, selectStartY),
+// 			// 		p3: new Point(selectStartX, selectStartY + height),
+// 			// 		p4: new Point(selectStartX + width, selectStartY + height)
+// 			// 	}
+
+// 			// 	selectCtx.clearRect(0, 0, selectCanvas.width, selectCanvas.height);
+// 			// 	selectCtx.strokeStyle = "lightgray";
+// 			// 	selectCtx.lineWidth = 3;
+// 			// 	selectCtx.strokeRect(selectStartX, selectStartY, width, height);
+// 			// }
+// 			break;
+// 		default:
+// 			break;
+// 	}
+// }
 
 function updateCanvas() {
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
@@ -282,7 +297,7 @@ function calculateDistance(point1, point2) {
 
 function validateNewPoint(point) {
 	var result = '{"result":false,"point":""}';
-	var selectedPoint = null;
+	var sPoint = null;
 	if (edges && edges.length > 0) {
 		edges.forEach(function (line) {
 			disS = calculateDistance(line.start, point);
@@ -290,26 +305,26 @@ function validateNewPoint(point) {
 			if (disS <= snappingDistance) {
 				result = '{"result":true,"point":' +
 					JSON.stringify(line.start) + '}';
-				selectedPoint = line.start;
+				sPoint = line.start;
 				return true;
 			} else if (disE <= snappingDistance) {
 				result = '{"result":true,"point":' +
 					JSON.stringify(line.end) + '}';
-				selectedPoint = line.end;
+				sPoint = line.end;
 				return true;
 			}
 		});
-		highLightPoint(selectedPoint)
+		highLightPoint(sPoint, '#99d9ea')
 		return result;
 	}
 	return '{"result":true,"point":""}';
 }
 
-function highLightPoint(point) {
+function highLightPoint(point, color) {
 	if (point) {
 		drawCtx.beginPath();
 		drawCtx.arc(point.x, point.y, 7, 0, 2 * Math.PI, false);
-		drawCtx.fillStyle = '#99d9ea';
+		drawCtx.fillStyle = color;
 		drawCtx.fill();
 	}
 }
@@ -328,31 +343,59 @@ function saveFile() {
 	link.click();
 }
 
-function selectPoint(point) {
-	selectMode = true;
-	selectCanvas.style.visibility = 'visible';
-	if (point) {
-		drawCtx.beginPath();
-		drawCtx.arc(point.x, point.y, 7, 0, 2 * Math.PI, false);
-		drawCtx.fillStyle = '#ff3300';
-		drawCtx.fill();
+function beginSelectDraw() {
+	if (drawingMode) {
+		selectMode = true;
+		drawingMode = false;
+		$("#btnDelete").css("visibility", "visible");
+		$("#btnSelectDraw").val('Draw');
+	} else {
+		selectMode = false;
+		drawingMode = true;
+		$("#btnSelectDraw").val('Select');
+		$("#btnDelete").css("visibility", "hidden");
 	}
 }
 
-// function endSelect() {
-// 	selectMode = false;
-// 	selectCanvas.style.visibility = 'hidden';
-// 	draw(rect.p1, rect.p2);
-// 	draw(rect.p1, rect.p3);
-// 	draw(rect.p3, rect.p4);
-// 	draw(rect.p2, rect.p4);
-// }
+function selectPoint(point) {
+	updateCanvas();
+	var sPoint = null;
+	var edgeCount = 0;
+	if (edges && edges.length > 0) {
+		edges.forEach(function (line) {
+			disS = calculateDistance(line.start, point);
+			disE = calculateDistance(line.end, point);
+			if (disS <= snappingDistance) {
+				sPoint = line.start;
+				edgeCount++;
+			} else if (disE <= snappingDistance) {
+				sPoint = line.end;
+				edgeCount++;
+			}
+		});
+		if (sPoint && (edgeCount == 1)) {
+			highLightPoint(sPoint, '#ff0000');
+			selectedPoint = sPoint;
+		}
+
+	}
+}
 
 function reOffset() {
 	var bb = drawCanvas.getBoundingClientRect();
 	drawCanvasOffsetLeft = bb.left;
 	drawCanvasOffsetTop = bb.top;
-	var bbs = selectCanvas.getBoundingClientRect();
-	selectCanvasOffsetLeft = bbs.left;
-	selectCanvasOffsetTop = bbs.top;
+	// var bbs = selectCanvas.getBoundingClientRect();
+	// selectCanvasOffsetLeft = bbs.left;
+	// selectCanvasOffsetTop = bbs.top;
+}
+
+function deletePoint(point) {
+	if (edges && edges.length > 0) {
+		for (i = 0; i < edges.length; i++) {
+			if (edges[i].start == point || edges[i].end == point)
+				edges.splice(i, 1);
+		}
+		updateCanvas();
+	}
 }

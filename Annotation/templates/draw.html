@@ -44,14 +44,15 @@
 		<div style="text-align: center;">
 			<div id="dvCanvasContainer">
 				<canvas id="drawCanvas"></canvas>
-				<canvas id="selectCanvas" style="visibility: hidden;"></canvas>
+				<!-- <canvas id="selectCanvas" style="visibility: hidden;"></canvas> -->
 			</div>
 			<div style="display: inline-block; width:70px;">
-				<input type="button" value="save" id="btn" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="saveFile()">
-				<input type="button" value="clear" id="clr" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="clearCanvas()">
-				<button id="btnOpenFile1" class="btn btn-primary" style="width:60px; margin-bottom:5px;">Load</button>
+				<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="saveFile()">
+				<input type="button" value="Clear" id="clr" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="clearCanvas()">
+				<button id="btnOpenFile1" class="btn btn-primary" style="width:60px; margin-bottom:40px;">Load</button>
 				<input id="fileInput1" type="file" name="name" style="display: none;" />
-				<input type="button" value="select" id="select" class="btn btn-primary" style="width:60px;" onclick="beginSelect()">
+				<input type="button" value="Select" id="btnSelectDraw" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="beginSelectDraw()">
+				<input type="button" value="Delete" id="btnDelete" class="btn btn-primary" style="width:60px; visibility: hidden" onclick="deletePoint()">
 			</div>
 		</div>
 
