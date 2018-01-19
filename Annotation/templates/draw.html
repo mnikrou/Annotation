@@ -40,13 +40,13 @@
 </script>
 
 <body>
-	<div class="wrapper">
-		<div style="text-align: center;">
-			<div id="dvCanvasContainer">
+	<div class="row">
+		<div class="wrapper">
+			<div id="dvCanvasContainer" style="float: left;margin-right: 15px;">
 				<canvas id="drawCanvas"></canvas>
 				<!-- <canvas id="selectCanvas" style="visibility: hidden;"></canvas> -->
 			</div>
-			<div style="display: inline-block; width:70px;">
+			<div style="float: left; display: inline-grid;">
 				<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="saveFile()">
 				<input type="button" value="Clear" id="clr" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="clearCanvas()">
 				<button id="btnOpenFile1" class="btn btn-primary" style="width:60px; margin-bottom:40px;">Load</button>
@@ -55,19 +55,19 @@
 				<input type="button" value="Delete" id="btnDelete" class="btn btn-primary" style="width:60px; visibility: hidden" onclick="deletePoint()">
 			</div>
 		</div>
-
 	</div>
-	<br/>
-	<input id="pageCount" type="hidden" value="{{imagesCount}}">
-	<div style="text-align: center;">
-		<button class="btn" id="btnPrevious">
-			<i class="icon-step-backward"></i>
-		</button>
-		<span id="spnPaging" style="margin-right: 5px; margin-left: 5px"></span>
-		<button class="btn" id="btnNext">
-			<i class="icon-step-forward"></i>
-		</button>
+	<div class="row">
+		<br/>
+		<input id="pageCount" type="hidden" value="{{imagesCount}}">
+		<div style="text-align: center;">
+			<button class="btn" id="btnPrevious">
+				<i class="icon-step-backward"></i>
+			</button>
+			<span id="spnPaging" style="margin-right: 5px; margin-left: 5px"></span>
+			<button class="btn" id="btnNext">
+				<i class="icon-step-forward"></i>
+			</button>
+		</div>
 	</div>
-	test
 </body>
 {% endblock %}

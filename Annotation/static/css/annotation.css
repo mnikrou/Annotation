@@ -1,10 +1,6 @@
 .wrapper {
-    width: 100%;
+    width: 60%;
     height: 90%;
-}
-
-.wrapper canvas {
-    position: absolute;
-    top: 0;
-    left: 45%;
+    margin: 0 auto;
+    text-align: center;
 }
