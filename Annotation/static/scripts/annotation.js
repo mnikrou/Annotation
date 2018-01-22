@@ -10,7 +10,7 @@ var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx,
 	drawingMode = true,
 	selectMode = false,
 	edges = [],
-	snappingDistance = 10,
+	snappingDistance = 5,
 	shiftClick, drawCanvasOffsetLeft, drawCanvasOffsetTop, selectCanvasOffsetLeft, selectCanvasOffsetTop;
 
 function Point(x, y) {
@@ -18,8 +18,18 @@ function Point(x, y) {
 	this.y = y;
 }
 
+function pointsAreEqual(p1, p2) {
+	if (p1 && p2) {
+		if (p1.x == p2.x && p1.y == p2.y)
+			return true;
+		else
+			return false;
+	}
+	else
+		return false;
+}
+
 function AnnotationObject(name, edges) {
-	//this.name = name;
 	this.edges = edges;
 }
 
@@ -284,21 +294,34 @@ function beginSelectDraw() {
 
 function selectPoint(point) {
 	updateCanvas();
+	selectedPoint = null;
 	var sPoint = null;
-	var edgeCount = 0;
+	var connectedEdgeCount = 0;
+	var disS = 0;
+	var disE = 0;
 	if (edges && edges.length > 0) {
 		edges.forEach(function (line) {
 			disS = calculateDistance(line.start, point);
 			disE = calculateDistance(line.end, point);
 			if (disS <= snappingDistance) {
+				if (connectedEdgeCount > 0) {
+					if (pointsAreEqual(sPoint, line.start))
+						connectedEdgeCount++;
+				}
+				else
+					connectedEdgeCount++;
 				sPoint = line.start;
-				edgeCount++;
 			} else if (disE <= snappingDistance) {
+				if (connectedEdgeCount > 0) {
+					if (pointsAreEqual(sPoint, line.end))
+						connectedEdgeCount++;
+				}
+				else
+					connectedEdgeCount++;
 				sPoint = line.end;
-				edgeCount++;
 			}
 		});
-		if (sPoint && (edgeCount == 1)) {
+		if (sPoint && (connectedEdgeCount == 1)) {
 			highLightPoint(sPoint, '#ff0000');
 			selectedPoint = sPoint;
 		}
