@@ -41,6 +41,7 @@ function initCanvas(imageUrl) {
 	drawCanvas.height *= res;
 	drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
 	drawCanvas.style.backgroundRepeat = "no-repeat";
+	drawCanvas.style.backgroundSize = "cover";
 
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
@@ -99,11 +100,10 @@ function drawCanvasHandleMouse(act, e) {
 				case 0: // left click
 					if (!selectMode) {
 						if (startX && startY) {
-							sPoint = new Point(startX, startY);
-							ePoint = new Point(lastX, lastY);
-							res=pointExists(sPoint);
-							if (pointExists(sPoint) || pointExists(ePoint)) {
-								resetPoints();
+							var sPoint = new Point(startX, startY);
+							var ePoint = new Point(lastX, lastY);
+							var endPointExists = pointExists(ePoint);
+							if (endPointExists) {
 								alert('Cycles are not allowed!');
 							}
 							else {
@@ -158,14 +158,14 @@ function drawCanvasHandleMouse(act, e) {
 					lastX = e.clientX - drawCanvasOffsetLeft;;
 					lastY = e.clientY - drawCanvasOffsetTop;
 					updateCanvas()
-					sp = new Point(startX, startY);
-					ep = new Point(lastX, lastY)
+					var sp = new Point(startX, startY);
+					var ep = new Point(lastX, lastY)
 					draw(sp, ep);
 				} else {
 					if (e.shiftKey) {
 						updateCanvas();
-						pX = e.clientX - drawCanvasOffsetLeft;
-						pY = e.clientY - drawCanvasOffsetTop;
+						var pX = e.clientX - drawCanvasOffsetLeft;
+						var pY = e.clientY - drawCanvasOffsetTop;
 						var p = new Point(pX, pY);
 						var res = JSON.parse(validateNewPoint(p));
 						if (!res.result) { }
