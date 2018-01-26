@@ -38,13 +38,12 @@ function Line(startPoint, endPoint) {
 	this.end = endPoint;
 }
 
-var res = window.devicePixelRatio || 1;
-
 function initCanvas(imageUrl) {
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	dvCanvasContainer = document.getElementById("dvCanvasContainer");
 	drawCtx = drawCanvas.getContext("2d");
+	var res = window.devicePixelRatio || 1;
 	drawCanvas.width = 600;
 	drawCanvas.height = 400;
 	drawCanvas.width *= res;
@@ -282,13 +281,13 @@ function beginSelectDraw() {
 	if (drawingMode) {
 		selectMode = true;
 		drawingMode = false;
-		$("#btnDelete").css("visibility", "visible");
+		$("#btnDelete").css("display", "unset");
 		$("#btnSelectDraw").val('Draw');
 	} else {
 		selectMode = false;
 		drawingMode = true;
 		$("#btnSelectDraw").val('Select');
-		$("#btnDelete").css("visibility", "hidden");
+		$("#btnDelete").css("display", "none");
 	}
 }
 

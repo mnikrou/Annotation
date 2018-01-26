@@ -41,18 +41,27 @@
 
 <body>
 	<div class="row">
-		<div class="wrapper">
-			<div id="dvCanvasContainer" style="float: left;margin-right: 15px;">
-				<canvas id="drawCanvas"></canvas>
-			</div>
-			<div style="float: left; display: inline-grid;">
-				<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="saveFile()"></input>
-				<input type="button" value="Clear" id="clr" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="clearCanvas()"></input>
-				<button id="btnOpenFile1" class="btn btn-primary" style="width:60px; margin-bottom:40px;">Load</button>
-				<input id="fileInput1" type="file" name="name" style="display: none;" ></input>
-				<input type="button" value="Select" id="btnSelectDraw" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="beginSelectDraw()"></input>
-				<input type="button" value="Delete" id="btnDelete" class="btn btn-primary" style="width:60px; visibility: hidden" onclick="deletePoint()"></input>
-			</div>
+		<div style="text-align: center;margin-bottom:10px;">
+			<input type="radio" id="test1" name="radio-group" checked>
+			<label for="test1" style="margin-right: 30px;">Draw</label>
+
+			<input type="radio" id="test2" name="radio-group">
+			<label for="test2">Select</label>
+			<!-- <input type="button" value="Select" id="btnSelectDraw" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="beginSelectDraw()"></input> -->
+		</div>
+	</div>
+	<div class="row">
+		<div id="dvCanvasContainer" style="text-align: center;">
+			<canvas id="drawCanvas"></canvas>
+		</div>
+	</div>
+	<div class="row">
+		<div style="text-align: center;">
+			<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px;" onclick="saveFile()"></input>
+			<input type="button" value="Clear" id="clr" class="btn btn-primary" style="width:60px;" onclick="clearCanvas()"></input>
+			<!-- <button id="btnOpenFile1" class="btn btn-primary" style="width:60px;">Load</button> -->
+			<input id="fileInput1" type="file" name="name" style="display: none;"></input>
+			<input type="button" value="Delete Node" id="btnDelete" class="btn btn-primary" style="width:100px; display: none" onclick="deletePoint()"></input>
 		</div>
 	</div>
 	<div class="row">
