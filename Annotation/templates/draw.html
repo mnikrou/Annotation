@@ -1,4 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="ajaxUrl" content="{{ ajaxUrl }}">
 <link rel="stylesheet" href="{% static 'css/annotation.css' %}">
 <link href="{% static 'css/layout/cpanel-font-awesome.css' %}" rel="stylesheet" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -28,7 +30,9 @@
 					csrfmiddlewaretoken: '{{ csrf_token }}',
 				},
 				success: function (data) {
-					initCanvas(data);
+					jr= JSON.parse(data);
+					console.log(jr);
+					initCanvas(jr.imageUrl, jr.imageId);
 					document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
 				},
 				error: function (xhr, textStatus, errorThrown) {
@@ -42,12 +46,11 @@
 <body>
 	<div class="row">
 		<div style="text-align: center;margin-bottom:10px;">
-			<input type="radio" id="test1" name="radio-group" checked>
-			<label for="test1" style="margin-right: 30px;">Draw</label>
+			<input type="radio" id="rgDraw" name="rgDrawSelect" checked onclick="beginSelectDraw()">
+			<label for="rgDraw" style="margin-right: 30px;">Draw</label>
 
-			<input type="radio" id="test2" name="radio-group">
-			<label for="test2">Select</label>
-			<!-- <input type="button" value="Select" id="btnSelectDraw" class="btn btn-primary" style="width:60px; margin-bottom:5px;" onclick="beginSelectDraw()"></input> -->
+			<input type="radio" id="rgSelect" name="rgDrawSelect" onclick="beginSelectDraw()">
+			<label for="rgSelect">Select</label>
 		</div>
 	</div>
 	<div class="row">
@@ -57,7 +60,7 @@
 	</div>
 	<div class="row">
 		<div style="text-align: center;">
-			<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px;" onclick="saveFile()"></input>
+			<input type="button" value="Save" id="btn" class="btn btn-primary" style="width:60px;" onclick="save()"></input>
 			<input type="button" value="Clear" id="clr" class="btn btn-primary" style="width:60px;" onclick="clearCanvas()"></input>
 			<!-- <button id="btnOpenFile1" class="btn btn-primary" style="width:60px;">Load</button> -->
 			<input id="fileInput1" type="file" name="name" style="display: none;"></input>

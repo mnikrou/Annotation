@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^get_image/$', views.get_image, name='get_image'),
     url(r'^load_images/$', views.load_images, name='load_images'),
     url(r'^delete_image/$', views.delete_image, name='delete_image'),
+    url(r'^save_annotation/$', views.save_annotation, name='save_annotation'),
 ]
 
 if settings.DEBUG is True:

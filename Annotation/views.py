@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 import json
 import re
+from django.core.exceptions import ObjectDoesNotExist
 
 def login(request):
     template = loader.get_template('login.html')
@@ -56,7 +57,8 @@ def get_image(request):
     if request.is_ajax():
         img = get_image_by_page_number(int(request.POST['page_num']), 1)
         #data = serializers.serialize('json', img.object_list[0].img.url)
-        return HttpResponse(img.object_list[0].img.url)
+        res = {'imageUrl' : img.object_list[0].img.url, 'imageId':img.object_list[0].id}
+        return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
     
 @login_required
@@ -76,5 +78,21 @@ def delete_image(request):
         id = int(request.POST['id'])
         m = Image.objects.get(id=id)
         m.delete()
+        return HttpResponse('')
+    return HttpResponseForbidden('allowed only via Ajax')
+
+@login_required
+def save_annotation(request):
+    if request.is_ajax():
+        image = Image.objects.get(id=int(request.POST['image_id']))
+        try:
+           ia = ImageAnnotation.objects.get(user=request.user, image=image)
+        except ObjectDoesNotExist:
+           ia = None
+        if (ia):
+            ia.annotation_json = request.POST['annotation_json']
+        else:
+            ia = ImageAnnotation(user=request.user, image=image, annotation_json=request.POST['annotation_json'])
+        ia.save()
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')

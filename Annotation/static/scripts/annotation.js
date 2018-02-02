@@ -1,4 +1,4 @@
-var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx,
+var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId,
 	selectedPoint = null,
 	drawing = false,
 	lastX = 0,
@@ -29,7 +29,7 @@ function pointsAreEqual(p1, p2) {
 		return false;
 }
 
-function AnnotationObject(name, edges) {
+function AnnotationObject(edges) {
 	this.edges = edges;
 }
 
@@ -38,7 +38,8 @@ function Line(startPoint, endPoint) {
 	this.end = endPoint;
 }
 
-function initCanvas(imageUrl) {
+function initCanvas(imageUrl, imgId) {
+	imageId = imgId;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	dvCanvasContainer = document.getElementById("dvCanvasContainer");
@@ -263,18 +264,33 @@ function highLightPoint(point, color) {
 	}
 }
 
-function saveFile() {
-	var ann = new AnnotationObject("test", edges);
+function save() {
+	var ann = new AnnotationObject(edges);
 	var data = JSON.stringify(ann);
 
 	var csvContent = "data:text/csv;charset=utf-8,";
 	csvContent += data;
-	var encodedUri = encodeURI(csvContent);
-	var link = document.createElement("a");
-	link.setAttribute("href", encodedUri);
-	link.setAttribute("download", "cdata.csv");
-	document.body.appendChild(link);
-	link.click();
+	// var encodedUri = encodeURI(csvContent);
+	// var link = document.createElement("a");
+	// link.setAttribute("href", encodedUri);
+	// link.setAttribute("download", "cdata.csv");
+	// document.body.appendChild(link);
+	// link.click();
+
+	$.ajax({
+		type: 'POST',
+		url: $('meta[name="ajaxUrl"]').attr('content') + '/save_annotation/',
+		data: {
+			'image_id': imageId,
+			'annotation_json': data,
+			csrfmiddlewaretoken: $('meta[name="csrf-token"]').attr('content'),
+		},
+		success: function (data) {
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+		}
+	});
 }
 
 function beginSelectDraw() {
