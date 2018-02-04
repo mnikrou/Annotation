@@ -38,7 +38,7 @@ function Line(startPoint, endPoint) {
 	this.end = endPoint;
 }
 
-function initCanvas(imageUrl, imgId) {
+function initCanvas(imageUrl, imgId, annotationJson) {
 	imageId = imgId;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
@@ -56,6 +56,12 @@ function initCanvas(imageUrl, imgId) {
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
 	reOffset();
+
+	if (annotationJson){
+		var arr = JSON.parse(annotationJson);
+		edges = arr.edges;
+		updateCanvas();
+	}
 
 	window.onscroll = function (e) {
 		reOffset();
@@ -79,25 +85,6 @@ function initCanvas(imageUrl, imgId) {
 	shiftClick = jQuery.Event("click");
 	shiftClick.shiftKey = true;
 	$("#drawCanvas").trigger(shiftClick);
-
-	$('#fileInput1').on('change', function (e) {
-		var file = e.target.files[0];
-		if (!file) {
-			return;
-		}
-		var reader = new FileReader();
-		reader.onload = function (e) {
-			var contents = e.target.result;
-			var arr = JSON.parse(contents);
-			edges = arr.edges;
-			updateCanvas();
-		};
-		reader.readAsText(file);
-	});
-
-	$('#btnOpenFile1').on('click', function () {
-		$('#fileInput1').trigger('click');
-	});
 }
 
 function drawCanvasHandleMouse(act, e) {
@@ -270,12 +257,6 @@ function save() {
 
 	var csvContent = "data:text/csv;charset=utf-8,";
 	csvContent += data;
-	// var encodedUri = encodeURI(csvContent);
-	// var link = document.createElement("a");
-	// link.setAttribute("href", encodedUri);
-	// link.setAttribute("download", "cdata.csv");
-	// document.body.appendChild(link);
-	// link.click();
 
 	$.ajax({
 		type: 'POST',
@@ -286,6 +267,7 @@ function save() {
 			csrfmiddlewaretoken: $('meta[name="csrf-token"]').attr('content'),
 		},
 		success: function (data) {
+			alert('Successfully Saved!');
 		},
 		error: function (xhr, textStatus, errorThrown) {
 			alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);

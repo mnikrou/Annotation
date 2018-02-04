@@ -55,9 +55,15 @@ def upload_image(request):
 @login_required
 def get_image(request):
     if request.is_ajax():
+        annotation_json = ''
         img = get_image_by_page_number(int(request.POST['page_num']), 1)
-        #data = serializers.serialize('json', img.object_list[0].img.url)
-        res = {'imageUrl' : img.object_list[0].img.url, 'imageId':img.object_list[0].id}
+        try:
+           ia = ImageAnnotation.objects.get(user=request.user, image=img.object_list[0])
+        except ObjectDoesNotExist:
+           ia = None
+        if (ia):
+            annotation_json = ia.annotation_json
+        res = {'imageUrl' : img.object_list[0].img.url, 'imageId':img.object_list[0].id, 'annotation':annotation_json}
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
     

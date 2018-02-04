@@ -20,13 +20,6 @@ class ImageAnnotation(models.Model):
     annotation_json = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True) 
-    
-    # def save(self, *args, **kwargs):
-    #     ''' On save, update timestamps '''
-    #     if not self.id:
-    #         self.created_at = datetime.datetime.now()
-    #     self.updated_at = datetime.datetime.now()
-    #     return super(ImageAnnotation, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'ImageAnnotations'

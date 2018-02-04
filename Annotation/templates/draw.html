@@ -30,9 +30,9 @@
 					csrfmiddlewaretoken: '{{ csrf_token }}',
 				},
 				success: function (data) {
-					jr= JSON.parse(data);
-					console.log(jr);
-					initCanvas(jr.imageUrl, jr.imageId);
+					jsonResponse= JSON.parse(data);
+					console.log(jsonResponse);
+					initCanvas(jsonResponse.imageUrl, jsonResponse.imageId, jsonResponse.annotation);
 					document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
 				},
 				error: function (xhr, textStatus, errorThrown) {
