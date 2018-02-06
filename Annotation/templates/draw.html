@@ -32,7 +32,7 @@
 				success: function (data) {
 					jsonResponse= JSON.parse(data);
 					console.log(jsonResponse);
-					initCanvas(jsonResponse.imageUrl, jsonResponse.imageId, jsonResponse.annotation);
+					initCanvas(jsonResponse.imageUrl, jsonResponse.imageId, jsonResponse.annotation, jsonResponse.isExpertUser);
 					document.getElementById("spnPaging").innerHTML = pageNumber + " of {{imagesCount}}";
 				},
 				error: function (xhr, textStatus, errorThrown) {

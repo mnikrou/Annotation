@@ -1,4 +1,4 @@
-var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId,
+var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId, isExpertUser,
 	selectedPoint = null,
 	drawing = false,
 	lastX = 0,
@@ -38,8 +38,9 @@ function Line(startPoint, endPoint) {
 	this.end = endPoint;
 }
 
-function initCanvas(imageUrl, imgId, annotationJson) {
+function initCanvas(imageUrl, imgId, annotationJson, isExpert) {
 	imageId = imgId;
+	isExpertUser = isExpert;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	dvCanvasContainer = document.getElementById("dvCanvasContainer");
@@ -57,7 +58,12 @@ function initCanvas(imageUrl, imgId, annotationJson) {
 
 	reOffset();
 
-	if (annotationJson){
+	if (isExpertUser)
+		lineColor = "#ff6600";
+	else
+		lineColor = "yellow";
+
+	if (annotationJson) {
 		var arr = JSON.parse(annotationJson);
 		edges = arr.edges;
 		updateCanvas();
@@ -258,12 +264,17 @@ function save() {
 	var csvContent = "data:text/csv;charset=utf-8,";
 	csvContent += data;
 
+	var imageUrl = "";
+	if (isExpertUser)
+		imageUrl = drawCanvas.toDataURL();
+
 	$.ajax({
 		type: 'POST',
 		url: $('meta[name="ajaxUrl"]').attr('content') + '/save_annotation/',
 		data: {
 			'image_id': imageId,
 			'annotation_json': data,
+			'image_url': imageUrl,
 			csrfmiddlewaretoken: $('meta[name="csrf-token"]').attr('content'),
 		},
 		success: function (data) {

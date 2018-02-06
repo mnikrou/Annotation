@@ -10,22 +10,27 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import re
 from django.core.exceptions import ObjectDoesNotExist
+import utils
+
 
 def login(request):
     template = loader.get_template('login.html')
     return HttpResponse(template.render())
+
 
 @login_required
 def home(request):
     template = loader.get_template('home.html')
     return HttpResponse(template.render())
 
+
 @login_required
 def draw(request):
     template = loader.get_template('draw.html')
     ajax_url = re.sub('/draw/', '', request.path)
-    c = {'imagesCount': Image.objects.count(), 'ajaxUrl' : ajax_url}
+    c = {'imagesCount': Image.objects.count(), 'ajaxUrl': ajax_url}
     return HttpResponse(template.render(c, request))
+
 
 @login_required
 def cpanel(request):
@@ -33,50 +38,62 @@ def cpanel(request):
     c = {}
     return HttpResponse(template.render(c, request))
 
+
 @login_required
 def images(request):
     template = loader.get_template('images.html')
     ajax_url = re.sub('/images/', '', request.path)
-    c = {'ajaxUrl' : ajax_url}
+    c = {'ajaxUrl': ajax_url}
     return HttpResponse(template.render(c, request))
+
 
 @login_required
 def upload_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            m = Image(img = form.cleaned_data['image'])
+            m = Image(img=form.cleaned_data['image'])
             m.save()
         return redirect('images')
     else:
         form = ImageUploadForm()
-    return render(request, 'upload_image.html', { 'form': form })
+    return render(request, 'upload_image.html', {'form': form})
+
 
 @login_required
 def get_image(request):
     if request.is_ajax():
         annotation_json = ''
         img = get_image_by_page_number(int(request.POST['page_num']), 1)
+        is_expert_user = utils.is_expert_user(request.user)
         try:
-           ia = ImageAnnotation.objects.get(user=request.user, image=img.object_list[0])
+            ia = ImageAnnotation.objects.get(
+                user=request.user, image=img.object_list[0])
         except ObjectDoesNotExist:
-           ia = None
+            ia = None
         if (ia):
             annotation_json = ia.annotation_json
-        res = {'imageUrl' : img.object_list[0].img.url, 'imageId':img.object_list[0].id, 'annotation':annotation_json}
+        res = {'imageUrl': img.object_list[0].img.url, 'imageId': img.object_list[0].id,
+               'annotation': annotation_json, 'isExpertUser': is_expert_user}
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
-    
+
+
 @login_required
 def load_images(request):
     if request.is_ajax():
         images = get_image_by_page_number(int(request.POST['page_number']), 10)
         imgaesHtml = ''
         for rec in images.object_list:
-            imgaesHtml += '<div class=\"show-image\"><img src="'+rec.img.url+'" alt="" style="width: 250px; height: 250px; margin-bottom: 5px" /><button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" ><a class="icon-eye-open" href="'+rec.img.url+'"></a></button> <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" onclick="deleteImage('+str(rec.id)+')"/> </div>'
-        response_data = json.dumps({'total_pages':images.paginator.num_pages , 'html': imgaesHtml})
+            imgaesHtml += '<div class=\"show-image\"><img src="' + rec.img.url + '" alt="" style="width: 250px; height: 250px; margin-bottom: 5px" /><button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" ><a class="icon-eye-open" href="' + \
+                rec.img.url + \
+                '"></a></button> <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" onclick="deleteImage(' + str(
+                    rec.id) + ')"/> </div>'
+        response_data = json.dumps(
+            {'total_pages': images.paginator.num_pages, 'html': imgaesHtml})
         return HttpResponse(response_data, content_type='application/json')
     return HttpResponseForbidden('allowed only via Ajax')
+
 
 @login_required
 def delete_image(request):
@@ -87,18 +104,23 @@ def delete_image(request):
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')
 
+
 @login_required
 def save_annotation(request):
     if request.is_ajax():
         image = Image.objects.get(id=int(request.POST['image_id']))
         try:
-           ia = ImageAnnotation.objects.get(user=request.user, image=image)
+            ia = ImageAnnotation.objects.get(user=request.user, image=image)
         except ObjectDoesNotExist:
-           ia = None
+            ia = None
         if (ia):
             ia.annotation_json = request.POST['annotation_json']
         else:
-            ia = ImageAnnotation(user=request.user, image=image, annotation_json=request.POST['annotation_json'])
+            ia = ImageAnnotation(user=request.user, image=image,
+                                 annotation_json=request.POST['annotation_json'])
         ia.save()
+        if(utils.is_expert_user(request.user)):
+            with open("imageToSave.png", "wb") as fh:
+                fh.write(request.POST['image_url'].replace('data:image/png;base64,', '').decode('base64'))
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')
