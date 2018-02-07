@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.template import loader, RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from .forms import ImageUploadForm
 from .models import *
 from django.core import serializers
@@ -10,7 +10,12 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import re
 from django.core.exceptions import ObjectDoesNotExist
-import utils
+from .utils import *
+from django.conf import settings
+import os
+from PIL import Image as PImage
+
+TRAINING_IMAGES_DIR = settings.MEDIA_ROOT + "/training_images/"
 
 
 def login(request):
@@ -64,8 +69,18 @@ def upload_image(request):
 def get_image(request):
     if request.is_ajax():
         annotation_json = ''
-        img = get_image_by_page_number(int(request.POST['page_num']), 1)
-        is_expert_user = utils.is_expert_user(request.user)
+        page_num = int(request.POST['page_num'])
+        img = get_image_by_page_number(page_num, 1)
+        is_expert = is_expert_user(request.user)
+        if(not is_expert):
+            if (page_num in [1, 2, 3]):
+                dir = [name for name in os.listdir(TRAINING_IMAGES_DIR)]
+                if (dir):
+                    imgUrl = settings.MEDIA_URL + 'training_images/' + \
+                        dir[0] + '/' + str(img.object_list[0].id) + '.png'
+                    res = {'imageUrl': imgUrl, 'imageId': img.object_list[0].id,
+                        'annotation': annotation_json, 'isExpertUser': is_expert}
+                    return HttpResponse(json.dumps(res))
         try:
             ia = ImageAnnotation.objects.get(
                 user=request.user, image=img.object_list[0])
@@ -74,12 +89,13 @@ def get_image(request):
         if (ia):
             annotation_json = ia.annotation_json
         res = {'imageUrl': img.object_list[0].img.url, 'imageId': img.object_list[0].id,
-               'annotation': annotation_json, 'isExpertUser': is_expert_user}
+               'annotation': annotation_json, 'isExpertUser': is_expert}
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
 
 
 @login_required
+@permission_required('Annotation.add_image', raise_exception=True)
 def load_images(request):
     if request.is_ajax():
         images = get_image_by_page_number(int(request.POST['page_number']), 10)
@@ -96,6 +112,7 @@ def load_images(request):
 
 
 @login_required
+@permission_required('Annotation.delete_image', raise_exception=True)
 def delete_image(request):
     if request.is_ajax():
         id = int(request.POST['id'])
@@ -119,8 +136,12 @@ def save_annotation(request):
             ia = ImageAnnotation(user=request.user, image=image,
                                  annotation_json=request.POST['annotation_json'])
         ia.save()
-        if(utils.is_expert_user(request.user)):
-            with open("imageToSave.png", "wb") as fh:
-                fh.write(request.POST['image_url'].replace('data:image/png;base64,', '').decode('base64'))
+        if(is_expert_user(request.user)):
+            dir = TRAINING_IMAGES_DIR + request.user.username
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+            with open(dir + "/" + request.POST['image_id'] + ".png", "wb") as fh:
+                fh.write(request.POST['image_url'].replace(
+                    'data:image/png;base64,', '').decode('base64'))
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')

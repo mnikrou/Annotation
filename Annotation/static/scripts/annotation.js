@@ -1,4 +1,4 @@
-var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId, isExpertUser,
+var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId, isExpertUser, backgroundImg,
 	selectedPoint = null,
 	drawing = false,
 	lastX = 0,
@@ -43,18 +43,29 @@ function initCanvas(imageUrl, imgId, annotationJson, isExpert) {
 	isExpertUser = isExpert;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
-	dvCanvasContainer = document.getElementById("dvCanvasContainer");
 	drawCtx = drawCanvas.getContext("2d");
 	var res = window.devicePixelRatio || 1;
 	drawCanvas.width = 600;
 	drawCanvas.height = 400;
 	drawCanvas.width *= res;
 	drawCanvas.height *= res;
-	drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
+	//drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
 	drawCanvas.style.backgroundRepeat = "no-repeat";
 	drawCanvas.style.backgroundSize = "cover";
-
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+
+	backgroundImg = new Image();
+	backgroundImg.onload = function () {
+		if (annotationJson) {
+			var arr = JSON.parse(annotationJson);
+			edges = arr.edges;
+			updateCanvas();
+		}
+		else {
+			drawCtx.drawImage(backgroundImg, 0, 0, drawCanvas.width, drawCanvas.height);
+		}
+	};
+	backgroundImg.src = imageUrl;
 
 	reOffset();
 
@@ -62,12 +73,6 @@ function initCanvas(imageUrl, imgId, annotationJson, isExpert) {
 		lineColor = "#ff6600";
 	else
 		lineColor = "yellow";
-
-	if (annotationJson) {
-		var arr = JSON.parse(annotationJson);
-		edges = arr.edges;
-		updateCanvas();
-	}
 
 	window.onscroll = function (e) {
 		reOffset();
@@ -185,6 +190,7 @@ function drawCanvasHandleMouse(act, e) {
 
 function updateCanvas() {
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+	drawCtx.drawImage(backgroundImg, 0, 0, drawCanvas.width, drawCanvas.height);
 	edges.forEach(function (line) {
 		draw(line.start, line.end);
 	});
@@ -208,6 +214,7 @@ function draw(sPoint, ePoint) {
 function clearCanvas() {
 	edges = [];
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+	drawCtx.drawImage(backgroundImg, 0, 0, drawCanvas.width, drawCanvas.height);
 }
 
 function resetPoints() {

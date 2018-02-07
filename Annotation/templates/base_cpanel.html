@@ -59,9 +59,11 @@
 
             <ul id="menu" class="collapse">
                 <li class="panel">
+                    {% if perms.auth.add_image %}
                     <a href="{% url 'images' %}">
                         <i class="icon-table"></i> Images
                     </a>
+                    {% endif %}
                 </li>
                 <li class="panel ">
                     <a href="#" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#component-nav">
