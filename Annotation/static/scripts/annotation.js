@@ -38,26 +38,31 @@ function Line(startPoint, endPoint) {
 	this.end = endPoint;
 }
 
-function initCanvas(imageUrl, imgId, annotationJson, isExpert) {
-	imageId = imgId;
-	isExpertUser = isExpert;
+function initCanvas(data) {
+	resetPoints();
+	drawing = false;
+	jsonResponse= JSON.parse(data);
+	console.log(jsonResponse);
+
+	imageId = jsonResponse.imageId;
+	isExpertUser = jsonResponse.isExpert;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	drawCtx = drawCanvas.getContext("2d");
 	var res = window.devicePixelRatio || 1;
-	drawCanvas.width = 600;
-	drawCanvas.height = 400;
-	drawCanvas.width *= res;
-	drawCanvas.height *= res;
+	drawCanvas.width = jsonResponse.imgWidth;
+	drawCanvas.height = jsonResponse.imgHeight;
+	//drawCanvas.width *= res;
+	//drawCanvas.height *= res;
 	//drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
-	drawCanvas.style.backgroundRepeat = "no-repeat";
-	drawCanvas.style.backgroundSize = "cover";
+	//drawCanvas.style.backgroundRepeat = "no-repeat";
+	//drawCanvas.style.backgroundSize = "cover";
 	drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
 	backgroundImg = new Image();
 	backgroundImg.onload = function () {
-		if (annotationJson) {
-			var arr = JSON.parse(annotationJson);
+		if (jsonResponse.annotation) {
+			var arr = JSON.parse(jsonResponse.annotation);
 			edges = arr.edges;
 			updateCanvas();
 		}
@@ -65,7 +70,7 @@ function initCanvas(imageUrl, imgId, annotationJson, isExpert) {
 			drawCtx.drawImage(backgroundImg, 0, 0, drawCanvas.width, drawCanvas.height);
 		}
 	};
-	backgroundImg.src = imageUrl;
+	backgroundImg.src = jsonResponse.imageUrl;
 
 	reOffset();
 

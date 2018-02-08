@@ -72,15 +72,6 @@ def get_image(request):
         page_num = int(request.POST['page_num'])
         img = get_image_by_page_number(page_num, 1)
         is_expert = is_expert_user(request.user)
-        if(not is_expert):
-            if (page_num in [1, 2, 3]):
-                dir = [name for name in os.listdir(TRAINING_IMAGES_DIR)]
-                if (dir):
-                    imgUrl = settings.MEDIA_URL + 'training_images/' + \
-                        dir[0] + '/' + str(img.object_list[0].id) + '.png'
-                    res = {'imageUrl': imgUrl, 'imageId': img.object_list[0].id,
-                        'annotation': annotation_json, 'isExpertUser': is_expert}
-                    return HttpResponse(json.dumps(res))
         try:
             ia = ImageAnnotation.objects.get(
                 user=request.user, image=img.object_list[0])
@@ -88,8 +79,17 @@ def get_image(request):
             ia = None
         if (ia):
             annotation_json = ia.annotation_json
-        res = {'imageUrl': img.object_list[0].img.url, 'imageId': img.object_list[0].id,
-               'annotation': annotation_json, 'isExpertUser': is_expert}
+        if(not is_expert):
+            if (page_num in [1, 2, 3]):
+                dir = [name for name in os.listdir(TRAINING_IMAGES_DIR)]
+                if (dir):
+                    imgUrl = settings.MEDIA_URL + 'training_images/' + \
+                        dir[0] + '/' + str(img.object_list[0].id) + '.png'
+                    res = {'imageUrl': imgUrl, 'imageId': img.object_list[0].id, 'imgHeight': img.object_list[0].img.height,
+                           'imgWidth': img.object_list[0].img.width, 'annotation': annotation_json, 'isExpertUser': is_expert}
+                    return HttpResponse(json.dumps(res))
+        res = {'imageUrl': img.object_list[0].img.url, 'imageId': img.object_list[0].id, 'imgHeight': img.object_list[0].img.height,
+               'imgWidth': img.object_list[0].img.width, 'annotation': annotation_json, 'isExpertUser': is_expert}
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
 
