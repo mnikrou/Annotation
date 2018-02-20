@@ -72,6 +72,8 @@ function initCanvas(data) {
 	};
 	backgroundImg.src = jsonResponse.imageUrl;
 
+	$("#pointsCount").append(jsonResponse.nodesCount);
+
 	reOffset();
 
 	if (isExpertUser)

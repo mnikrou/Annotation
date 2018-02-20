@@ -4,6 +4,7 @@ from Annotation import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from Annotation import draw_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -15,10 +16,10 @@ urlpatterns = [
     url(r'^draw/', views.draw, name='draw'),
     url(r'^images/', views.images, name='images'),
     url(r'^upload/img/$', views.upload_image, name='upload_image'),
-    url(r'^get_image/$', views.get_image, name='get_image'),
+    url(r'^get_image/$', draw_views.get_image, name='get_image'),
     url(r'^load_images/$', views.load_images, name='load_images'),
     url(r'^delete_image/$', views.delete_image, name='delete_image'),
-    url(r'^save_annotation/$', views.save_annotation, name='save_annotation'),
+    url(r'^save_annotation/$', draw_views.save_annotation, name='save_annotation'),
 ]
 
 if settings.DEBUG is True:
