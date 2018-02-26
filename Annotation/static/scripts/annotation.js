@@ -1,8 +1,7 @@
-var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId, isExpertUser, backgroundImg,
+var canvas, ctx, drawCanvas, drawCtx, selectCanvas, selectCtx, imageId, isExpertUser, backgroundImg, training_nodes_count,
 	selectedPoint = null,
-	drawing = false,
-	lastX = 0,
-	lastY = 0,
+	drawing = false, saved = false,
+	lastX = 0, lastY = 0,
 	startX, startY, lineThickness = 2,
 	lineColor = "yellow",
 	selectStartX, selectStartY, selectMouseX, selectMouseY, rect = null,
@@ -41,7 +40,7 @@ function Line(startPoint, endPoint) {
 function initCanvas(data) {
 	resetPoints();
 	drawing = false;
-	jsonResponse= JSON.parse(data);
+	jsonResponse = JSON.parse(data);
 	console.log(jsonResponse);
 
 	imageId = jsonResponse.imageId;
@@ -52,6 +51,7 @@ function initCanvas(data) {
 	var res = window.devicePixelRatio || 1;
 	drawCanvas.width = jsonResponse.imgWidth;
 	drawCanvas.height = jsonResponse.imgHeight;
+	saved = false
 	//drawCanvas.width *= res;
 	//drawCanvas.height *= res;
 	//drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
@@ -64,6 +64,8 @@ function initCanvas(data) {
 		if (jsonResponse.annotation) {
 			var arr = JSON.parse(jsonResponse.annotation);
 			edges = arr.edges;
+			if (edges && edges.length != 0)
+				saved = true;
 			updateCanvas();
 		}
 		else {
@@ -72,7 +74,8 @@ function initCanvas(data) {
 	};
 	backgroundImg.src = jsonResponse.imageUrl;
 
-	$("#pointsCount").append(jsonResponse.nodesCount);
+	training_nodes_count = jsonResponse.nodesCount
+	$("#pointsCount").text("Number of points : " + training_nodes_count);
 
 	reOffset();
 
@@ -289,10 +292,18 @@ function save() {
 			'image_id': imageId,
 			'annotation_json': data,
 			'image_url': imageUrl,
+			'training_nodes_count': training_nodes_count,
 			csrfmiddlewaretoken: $('meta[name="csrf-token"]').attr('content'),
 		},
 		success: function (data) {
-			alert('Successfully Saved!');
+			if (data == "") {
+				alert('Successfully Saved!');
+				saved = true;
+			}
+			else {
+				alert(data);
+				saved = false;
+			}
 		},
 		error: function (xhr, textStatus, errorThrown) {
 			alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);

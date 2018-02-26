@@ -3,21 +3,40 @@
 <meta name="ajaxUrl" content="{{ ajaxUrl }}">
 <link rel="stylesheet" href="{% static 'css/annotation.css' %}">
 <link href="{% static 'css/layout/cpanel-font-awesome.css' %}" rel="stylesheet" />
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="{% static 'scripts/annotation.js' %}"></script>
 <script type="text/javascript">
 	pageNumber = 1;
+
 	$(document).ready(function () {
+
 		$("#btnNext").click(function (e) {
 			if (pageNumber < $("#pageCount").val())
 				pageNumber += 1;
-			showImage();
+			if (saved)
+				showImage();
+			else {
+				var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
+				if (r == true) {
+					showImage();
+				} else {
+				}
+			}
+
 		});
 
 		$("#btnPrevious").click(function (e) {
 			if (pageNumber > 1)
 				pageNumber -= 1;
-			showImage();
+				if (saved)
+				showImage();
+			else {
+				var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
+				if (r == true) {
+					showImage();
+				} else {
+				}
+			}
 		});
 
 		showImage();
@@ -44,7 +63,8 @@
 <body>
 	<div class="row">
 		<div style="text-align: center;margin-bottom:30px;">
-			<h4 id="pointsCount">Maximum number of points : </h1>
+			<h4 id="pointsCount">
+				</h1>
 		</div>
 	</div>
 	<div class="row">

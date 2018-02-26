@@ -8,6 +8,7 @@ import os
 from django.conf import settings
 import json
 from GraphEditDistance.Graph.graph import *
+from django.contrib.auth.models import User
 
 TRAINING_IMAGES_DIR = settings.MEDIA_ROOT + "/training_images/"
 
@@ -16,18 +17,19 @@ TRAINING_IMAGES_DIR = settings.MEDIA_ROOT + "/training_images/"
 def get_image(request):
     if request.is_ajax():
         annotation_json = ''
+        nodes_count = 0
         page_num = int(request.POST['page_num'])
         img = get_image_by_page_number(page_num, 1)
         is_expert = is_expert_user(request.user)
-        try:
-            ia = ImageAnnotation.objects.get(
-                user=request.user, image=img.object_list[0])
-        except ObjectDoesNotExist:
-            ia = None
-        if (ia):
-            annotation_json = ia.annotation_json
-            g = Graph.from_json(json.loads(annotation_json))
-            nodes_count = len(g.get_nodes())
+        ia = ImageAnnotation.objects.filter(
+            user=request.user, image=img.object_list[0])
+        if ia:
+            annotation_json = ia[0].annotation_json
+        ia2 = ImageAnnotation.objects.filter(
+            user__groups__name='EXPERT_USERS', image=img.object_list[0])
+        if ia2:
+            g = Graph.from_json(json.loads(ia2[0].annotation_json))
+            nodes_count = g.size()
         if(not is_expert):
             if (page_num in [1, 2, 3]):
                 dir = [name for name in os.listdir(TRAINING_IMAGES_DIR)]
@@ -47,6 +49,10 @@ def get_image(request):
 def save_annotation(request):
     if request.is_ajax():
         image = Image.objects.get(id=int(request.POST['image_id']))
+        g = Graph.from_json(json.loads(request.POST['annotation_json']))
+        nodes_count = g.size()
+        if int(request.POST['training_nodes_count']) != nodes_count:
+            return HttpResponse("You should annotate image with " + request.POST['training_nodes_count'] + " nodes")
         try:
             ia = ImageAnnotation.objects.get(user=request.user, image=image)
         except ObjectDoesNotExist:
