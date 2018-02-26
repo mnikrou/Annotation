@@ -1,0 +1,30 @@
+from graph.node import *
+from graph.edge import *
+from graph.graph import *
+
+n1= Node(1,1)
+n2= Node(1,2)
+
+n3= Node(2,2)
+
+n4= Node(5,5)
+
+e1=Edge(n1,n2)
+
+e2=Edge(n2,n3)
+
+e3=Edge(n3,n4)
+
+g= Graph([e1,e2,e3])
+from utils.json_utils import GenericJSONEncoder, GenericJSONDecoder, MyEncoder
+import json
+s=MyEncoder().encode(g)
+tmp= json.loads(s)
+
+json_object = tmp
+
+from Graph.graph import *
+g1=Graph.create_from('sample_data/g1.txt')
+g2=Graph.create_from('sample_data/g2.txt')
+import graph_edit_distance as ged
+ged.compareGraphs(g1,g2)
