@@ -51,7 +51,7 @@ def save_annotation(request):
         image = Image.objects.get(id=int(request.POST['image_id']))
         g = Graph.from_json(json.loads(request.POST['annotation_json']))
         nodes_count = g.size()
-        if int(request.POST['training_nodes_count']) != nodes_count:
+        if (not is_expert_user(request.user)) and int(request.POST['training_nodes_count']) != nodes_count:
             return HttpResponse("You should annotate image with " + request.POST['training_nodes_count'] + " nodes")
         try:
             ia = ImageAnnotation.objects.get(user=request.user, image=image)

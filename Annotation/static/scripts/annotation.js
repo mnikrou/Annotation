@@ -44,7 +44,7 @@ function initCanvas(data) {
 	console.log(jsonResponse);
 
 	imageId = jsonResponse.imageId;
-	isExpertUser = jsonResponse.isExpert;
+	isExpertUser = jsonResponse.isExpertUser;
 	edges = [];
 	drawCanvas = document.getElementById("drawCanvas");
 	drawCtx = drawCanvas.getContext("2d");
