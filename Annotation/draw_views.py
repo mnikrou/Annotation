@@ -10,8 +10,6 @@ import json
 from GraphEditDistance.Graph.graph import *
 from django.contrib.auth.models import User
 
-TRAINING_IMAGES_DIR = settings.MEDIA_ROOT + "/training_images/"
-
 
 @login_required
 def get_image(request):
@@ -19,7 +17,7 @@ def get_image(request):
         annotation_json = ''
         nodes_count = 0
         page_num = int(request.POST['page_num'])
-        img = get_image_by_page_number(page_num, 1)
+        img = get_image_by_page_number(page_num, 1, request.user)
         is_expert = is_expert_user(request.user)
         ia = ImageAnnotation.objects.filter(
             user=request.user, image=img.object_list[0])
@@ -32,9 +30,9 @@ def get_image(request):
             nodes_count = g.size()
         if(not is_expert):
             if (page_num in [1, 2, 3]):
-                dir = [name for name in os.listdir(TRAINING_IMAGES_DIR)]
+                dir = [name for name in os.listdir(settings.EXPERT_ANNOTATED_IMAGES)]
                 if (dir):
-                    imgUrl = settings.MEDIA_URL + 'training_images/' + \
+                    imgUrl = settings.MEDIA_URL+ 'expert_annotated_images/' + \
                         dir[0] + '/' + str(img.object_list[0].id) + '.png'
                     res = {'imageUrl': imgUrl, 'imageId': img.object_list[0].id, 'imgHeight': img.object_list[0].img.height,
                            'imgWidth': img.object_list[0].img.width, 'annotation': annotation_json, 'isExpertUser': is_expert, 'nodesCount': nodes_count}
@@ -64,11 +62,13 @@ def save_annotation(request):
                                  annotation_json=request.POST['annotation_json'])
         ia.save()
         if(is_expert_user(request.user)):
-            dir = TRAINING_IMAGES_DIR + request.user.username
-            if not os.path.exists(dir):
-                os.makedirs(dir)
-            with open(dir + "/" + request.POST['image_id'] + ".png", "wb") as fh:
-                fh.write(request.POST['image_url'].replace(
-                    'data:image/png;base64,', '').decode('base64'))
+            dir = settings.EXPERT_ANNOTATED_IMAGES + request.user.username
+        else:
+            dir = settings.CROWD_ANNOTATED_IMAGES + request.user.username
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        with open(dir + "/" + request.POST['image_id'] + ".png", "wb") as fh:
+            fh.write(request.POST['image_url'].replace(
+                'data:image/png;base64,', '').decode('base64'))
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')

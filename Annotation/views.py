@@ -31,7 +31,13 @@ def home(request):
 def draw(request):
     template = loader.get_template('draw.html')
     ajax_url = re.sub('/draw/', '', request.path)
-    c = {'imagesCount': Image.objects.count(), 'ajaxUrl': ajax_url}
+    if is_expert_user(request.user):
+        images = Image.objects.all()
+    else:
+        annotated_image_ids = ImageAnnotation.objects.filter(
+            user__groups__name='EXPERT_USERS').values_list('image')
+        images = Image.objects.filter(id__in=annotated_image_ids)
+    c = {'imagesCount': images.count(), 'ajaxUrl': ajax_url}
     return HttpResponse(template.render(c, request))
 
 

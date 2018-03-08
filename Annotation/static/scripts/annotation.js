@@ -282,8 +282,7 @@ function save() {
 	csvContent += data;
 
 	var imageUrl = "";
-	if (isExpertUser)
-		imageUrl = drawCanvas.toDataURL();
+	imageUrl = drawCanvas.toDataURL();
 
 	$.ajax({
 		type: 'POST',

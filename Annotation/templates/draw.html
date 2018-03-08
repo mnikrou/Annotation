@@ -11,30 +11,35 @@
 	$(document).ready(function () {
 
 		$("#btnNext").click(function (e) {
-			if (pageNumber < $("#pageCount").val())
-				pageNumber += 1;
-			if (saved)
-				showImage();
-			else {
-				var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
-				if (r == true) {
+			if (pageNumber < $("#pageCount").val()) {
+				if (saved) {
+					pageNumber += 1;
 					showImage();
-				} else {
+				}
+				else {
+					var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
+					if (r == true) {
+						pageNumber += 1;
+						showImage();
+					} else {
+					}
 				}
 			}
-
 		});
 
 		$("#btnPrevious").click(function (e) {
-			if (pageNumber > 1)
-				pageNumber -= 1;
-				if (saved)
-				showImage();
-			else {
-				var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
-				if (r == true) {
+			if (pageNumber > 1) {
+				if (saved) {
+					pageNumber -= 1;
 					showImage();
-				} else {
+				}
+				else {
+					var r = confirm("Your annotation is not saved, are you sure you want to proceed?");
+					if (r == true) {
+						pageNumber -= 1;
+						showImage();
+					} else {
+					}
 				}
 			}
 		});
