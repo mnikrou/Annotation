@@ -73,13 +73,16 @@ def upload_image(request):
 @permission_required('Annotation.add_image', raise_exception=True)
 def load_images(request):
     if request.is_ajax():
-        images = get_image_by_page_number(int(request.POST['page_number']), 10)
+        images = get_image_by_page_number(
+            int(request.POST['page_number']), 10, request.user)
         imgaesHtml = ''
         for rec in images.object_list:
             imgaesHtml += '<div class=\"show-image\"><img src="' + rec.img.url + '" alt="" style="width: 250px; height: 250px; margin-bottom: 5px" /><button class="btn btn-primary btn-circle btn-line" style="top:0; left:0;" ><a class="icon-eye-open" href="' + \
                 rec.img.url + \
                 '"></a></button> <input class="btn btn-danger btn-circle btn-line" type="button" value="X" style="top:0; left:85%;" onclick="deleteImage(' + str(
-                    rec.id) + ')"/> </div>'
+                    rec.id) + ')\"></input>' +\
+                '<button class="btn btn-primary btn-circle btn-line" style="top:0; left:42%;" ><a class="icon-eye-open" href="/analysis/' + str(rec.id) +'"></a></button>'+\
+                '</div>'
         response_data = json.dumps(
             {'total_pages': images.paginator.num_pages, 'html': imgaesHtml})
         return HttpResponse(response_data, content_type='application/json')
@@ -95,4 +98,3 @@ def delete_image(request):
         m.delete()
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')
-

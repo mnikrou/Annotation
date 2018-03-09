@@ -4,7 +4,7 @@ from .utils import *
 
 
 def get_image_by_page_number(page_num, count, user):
-    if is_expert_user(user):
+    if not is_crowd_user(user):
         images = Image.objects.all()
     else:
         annotated_image_ids = ImageAnnotation.objects.filter(

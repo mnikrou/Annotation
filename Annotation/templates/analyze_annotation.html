@@ -1,0 +1,41 @@
+{% extends 'base_cpanel.html' %} {% load static %} {% block content %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+
+</script>
+
+<body>
+    <div class="inner" style="min-height:1200px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Annotation Analysis</h2>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="body collapse in">
+                <div class="btn-group" style="margin-left: 35px;">
+                    <button data-toggle="dropdown" class="btn dropdown-toggle">Action
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Action</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">Separated link</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div id="divExpertImage" style="margin-left: 35px; width: 100%;">
+                <img src="{{ expert_annotated_image_url }}" alt="">
+            </div>
+        </div>
+        <hr />
+    </div>
+</body>> {% endblock %}

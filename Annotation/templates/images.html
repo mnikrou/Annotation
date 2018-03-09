@@ -5,38 +5,38 @@
     pageNumber = 1;
     $(document).ready(function () {
         $("#btnNext").click(function (e) {
-			if (pageNumber < $("#spTotalpages").html())
-				pageNumber += 1;
+            if (pageNumber < $("#spTotalpages").html())
+                pageNumber += 1;
             loadImages();
-	    });
+        });
 
-	    $("#btnPrevious").click(function (e) {
-			if (pageNumber > 1)
-				pageNumber -= 1;
+        $("#btnPrevious").click(function (e) {
+            if (pageNumber > 1)
+                pageNumber -= 1;
             loadImages();
-	    });
+        });
 
         loadImages();
     });
 
     function loadImages() {
-            $.ajax({
-                type: 'POST',
-                url: '{{ ajaxUrl }}/load_images/',
-                data: {
-                    'page_number': pageNumber,
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                success: function (data) {
-                    var imgaesHtml = "";
-                    $("#spPaging").html(pageNumber);
-                    $("#spTotalpages").html(data.total_pages);
-                    $("#divImages").html(data.html);
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
-                }
-            });
+        $.ajax({
+            type: 'POST',
+            url: '{{ ajaxUrl }}/load_images/',
+            data: {
+                'page_number': pageNumber,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (data) {
+                var imgaesHtml = "";
+                $("#spPaging").html(pageNumber);
+                $("#spTotalpages").html(data.total_pages);
+                $("#divImages").html(data.html);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+            }
+        });
     }
 
     function deleteImage(id) {
@@ -57,6 +57,22 @@
                 }
             });
         }
+    }
+    function analyzeImage(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/analysis/',
+            data: {
+                'imageId': id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (data) {
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+            }
+        });
     }
 </script>
 
@@ -84,8 +100,8 @@
                 <button class="btn" id="btnPrevious">
                     <i class="icon-step-backward"></i>
                 </button>
-                <span id="spPaging" style="margin-right: 5px; margin-left: 5px"></span> 
-                of 
+                <span id="spPaging" style="margin-right: 5px; margin-left: 5px"></span>
+                of
                 <span id="spTotalpages" style="margin-right: 5px; margin-left: 5px"></span>
                 <button class="btn" id="btnNext">
                     <i class="icon-step-forward"></i>

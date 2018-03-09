@@ -4,7 +4,7 @@ from Annotation import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-from Annotation import draw_views
+from Annotation import draw_views, analysis_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^load_images/$', views.load_images, name='load_images'),
     url(r'^delete_image/$', views.delete_image, name='delete_image'),
     url(r'^save_annotation/$', draw_views.save_annotation, name='save_annotation'),
+    url(r'^analysis/(?P<image_id>.+)/$', analysis_views.analysis, name='analysis'),
 ]
 
 if settings.DEBUG is True:
