@@ -1,7 +1,6 @@
 {% extends 'base_cpanel.html' %} {% load static %} {% block content %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
-
 </script>
 
 <body>
@@ -13,27 +12,35 @@
         </div>
         <hr />
         <div class="row">
-            <div class="body collapse in">
-                <div class="btn-group" style="margin-left: 35px;">
-                    <button data-toggle="dropdown" class="btn dropdown-toggle">Action
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">Action</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">Separated link</a>
-                        </li>
-                    </ul>
+            <div class="col-xs-6" style="text-align: center">
+                <h4>Expert user annotation</h4>
+            </div>
+            <div class="col-xs-6">
+                <div class="body collapse in">
+                    <div class="btn-group" style="margin-left: 35px;">
+                        <button data-toggle="dropdown" class="btn dropdown-toggle">Action
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">Action</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Separated link</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <br/>
         <div class="row">
-            <div id="divExpertImage" style="margin-left: 35px; width: 100%;">
+            <div id="divExpertImage" class="col-xs-6" style="text-align: center">
                 <img src="{{ expert_annotated_image_url }}" alt="">
+            </div>
+            <div id="divPoweruserImage" class="col-xs-6" style="text-align: center">
+                <img id="imgPoweruserImage" src="{{ expert_annotated_image_url }}" alt="">
             </div>
         </div>
         <hr />

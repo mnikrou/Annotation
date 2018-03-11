@@ -9,6 +9,7 @@ from django.conf import settings
 import json
 from GraphEditDistance.Graph.graph import *
 from django.contrib.auth.models import User
+import base64
 
 
 @login_required
@@ -68,7 +69,9 @@ def save_annotation(request):
         if not os.path.exists(dir):
             os.makedirs(dir)
         with open(dir + "/" + request.POST['image_id'] + ".png", "wb") as fh:
-            fh.write(request.POST['image_url'].replace(
-                'data:image/png;base64,', '').decode('base64'))
+            imgdata = base64.b64decode(request.POST['image_url'].replace('data:image/png;base64,', ''))
+            fh.write(imgdata)
+            # fh.write(request.POST['image_url'].replace(
+            #     'data:image/png;base64,', '').decode('base64'))
         return HttpResponse('')
     return HttpResponseForbidden('allowed only via Ajax')
