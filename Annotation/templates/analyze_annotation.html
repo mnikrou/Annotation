@@ -15,9 +15,15 @@
             <div class="col-xs-6" style="text-align: center">
                 <h4>Expert user annotation</h4>
             </div>
-            <div class="col-xs-6">
+            <div class="col-xs-6" style="text-align: center">
                 <div class="body collapse in">
-                    <div class="btn-group" style="margin-left: 35px;">
+                    <select name="auto" id="auto" onchange="get_user_annotation();" class="btn dropdown-toggle">
+                        <option value="">-- select a user --</option>
+                        {% for us in crowd_users %}
+                        <option value="{{ us.id }}">{{ us.username }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- <div class="btn-group">
                         <button data-toggle="dropdown" class="btn dropdown-toggle">Action
                             <span class="caret"></span>
                         </button>
@@ -30,7 +36,7 @@
                                 <a href="#">Separated link</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
