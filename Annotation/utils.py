@@ -6,3 +6,6 @@ def is_expert_user(user):
 
 def is_crowd_user(user):
     return user.groups.filter(Q(name='TRAINED_POWER_USERS') | Q(name='UNTRAINED_POWER_USERS')).exists()
+
+def is_trained_crowd_user(user):
+    return user.groups.filter(Q(name='TRAINED_POWER_USERS')).exists()

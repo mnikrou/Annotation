@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^delete_image/$', views.delete_image, name='delete_image'),
     url(r'^save_annotation/$', draw_views.save_annotation, name='save_annotation'),
     url(r'^analysis/(?P<image_id>.+)/$', analysis_views.analysis, name='analysis'),
+    url(r'^get_user_annotation/$', analysis_views.get_user_annotation, name='get_user_annotation'),
 ]
 
 if settings.DEBUG is True:

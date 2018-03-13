@@ -51,7 +51,8 @@ function initCanvas(data) {
 	var res = window.devicePixelRatio || 1;
 	drawCanvas.width = jsonResponse.imgWidth;
 	drawCanvas.height = jsonResponse.imgHeight;
-	saved = false
+	saved = false;
+	$("#pointsUsed").text("Number of points used so far : 0");
 	//drawCanvas.width *= res;
 	//drawCanvas.height *= res;
 	//drawCanvas.style.backgroundImage = "url('" + imageUrl + "')";
@@ -204,6 +205,10 @@ function updateCanvas() {
 	edges.forEach(function (line) {
 		draw(line.start, line.end);
 	});
+	var pointUsed = 0;
+	if (edges.length > 0)
+		pointUsed = edges.length + 1;
+	$("#pointsUsed").text("Number of points used so far : " + pointUsed);
 }
 
 function draw(sPoint, ePoint) {

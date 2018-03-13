@@ -1,6 +1,26 @@
 {% extends 'base_cpanel.html' %} {% load static %} {% block content %}
+<link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
+    function get_user_annotation() {
+        $.ajax({
+            type: 'POST',
+            url: '/get_user_annotation/',
+            data: {
+                'imageId': '{{imageId}}',
+                'crowd_user_id': $("#cmbUsers").val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (data) {
+                jsonResponse = JSON.parse(data);
+                $("#imgCrowduser").attr("src", jsonResponse.crowd_image_url);
+                $("#ged").text(jsonResponse.ged);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+            }
+        });
+    }
 </script>
 
 <body>
@@ -12,43 +32,34 @@
         </div>
         <hr />
         <div class="row">
-            <div class="col-xs-6" style="text-align: center">
-                <h4>Expert user annotation</h4>
-            </div>
-            <div class="col-xs-6" style="text-align: center">
-                <div class="body collapse in">
-                    <select name="auto" id="auto" onchange="get_user_annotation();" class="btn dropdown-toggle">
-                        <option value="">-- select a user --</option>
-                        {% for us in crowd_users %}
-                        <option value="{{ us.id }}">{{ us.username }}</option>
-                        {% endfor %}
-                    </select>
-                    <!-- <div class="btn-group">
-                        <button data-toggle="dropdown" class="btn dropdown-toggle">Action
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">Action</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">Separated link</a>
-                            </li>
-                        </ul>
-                    </div> -->
+            <div id="divExpertImage" class="col-md-6" style="text-align: center;margin-bottom: 30px;">
+                <div style="text-align: center;margin-bottom: 14px;">
+                    <h4>Expert user annotation</h4>
                 </div>
+                <img src="{{ expert_annotated_image_url }}" alt="">
             </div>
+            <div id="divCrowduserImage" class="col-md-6" style="text-align: center">
+                <div style="text-align: center;margin-bottom: 14px;">
+                    <div class="body collapse in">
+                        <select name="cmbUsers" id="cmbUsers" onchange="get_user_annotation();" class="btn dropdown-toggle">
+                            <option value=" ">-- select a user --</option>
+                            {% for us in crowd_users %}
+                            <option value="{{ us.id }}">{{ us.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <img id="imgCrowduser" src="" alt=" ">
+            </div>
+            <br/>
         </div>
         <br/>
         <div class="row">
-            <div id="divExpertImage" class="col-xs-6" style="text-align: center">
-                <img src="{{ expert_annotated_image_url }}" alt="">
-            </div>
-            <div id="divPoweruserImage" class="col-xs-6" style="text-align: center">
-                <img id="imgPoweruserImage" src="{{ expert_annotated_image_url }}" alt="">
+            <div style="text-align: center">
+                <h4 style="color:blue;">Graph Edit Distance :</h4>
+                <h4 id="ged" style="color:red;"></h4>
             </div>
         </div>
-        <hr />
+        <br/>
     </div>
-</body>> {% endblock %}
+</body> {% endblock %}

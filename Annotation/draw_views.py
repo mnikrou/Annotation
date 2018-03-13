@@ -29,7 +29,7 @@ def get_image(request):
         if ia2:
             g = Graph.from_json(json.loads(ia2[0].annotation_json))
             nodes_count = g.size()
-        if(not is_expert):
+        if(not is_expert and is_trained_crowd_user(request.user)):
             if (page_num in [1, 2, 3]):
                 dir = [name for name in os.listdir(settings.EXPERT_ANNOTATED_IMAGES)]
                 if (dir):
