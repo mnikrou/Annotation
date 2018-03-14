@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from munkres import Munkres
+from .munkres import Munkres
 import sys
 import math
 
