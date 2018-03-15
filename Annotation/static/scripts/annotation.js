@@ -280,6 +280,7 @@ function highLightPoint(point, color) {
 }
 
 function save() {
+	updateCanvas();
 	var ann = new AnnotationObject(edges);
 	var data = JSON.stringify(ann);
 
