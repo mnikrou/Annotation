@@ -5,6 +5,7 @@ import datetime
 
 class Image(models.Model):
     img = models.ImageField(upload_to = 'photos/', default = 'photos/None/no-img.jpg')
+    order = models.IntegerField(null=True, blank=True)
 
     def delete(self, *args, **kwargs):
         storage, path = self.img.storage, self.img.path
