@@ -44,7 +44,7 @@
         if (result) {
             $.ajax({
                 type: 'POST',
-                url: '/delete_image/',
+                url: '{{ ajaxUrl }}/delete_image/',
                 data: {
                     'id': id,
                     csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -61,7 +61,7 @@
     function analyzeImage(id) {
         $.ajax({
             type: 'POST',
-            url: '/analysis/',
+            url: '{{ ajaxUrl }}/analysis/',
             data: {
                 'imageId': id,
                 csrfmiddlewaretoken: '{{ csrf_token }}',

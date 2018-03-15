@@ -16,7 +16,7 @@ import GraphEditDistance.graph_edit_distance as ged
 @login_required
 def analysis(request, image_id):
     template = loader.get_template('analyze_annotation.html')
-    ajax_url = re.sub('/analyze_annotation/', '', request.path)
+    ajax_url = re.sub('/analysis/' + image_id + '/', '', request.path)
     dir = [name for name in os.listdir(settings.EXPERT_ANNOTATED_IMAGES)]
     if (dir):
         imgUrl = settings.MEDIA_URL + 'expert_annotated_images/' + \
@@ -31,7 +31,7 @@ def analysis(request, image_id):
 @login_required
 def get_user_annotation(request):
     if request.is_ajax():
-        ajax_url = re.sub('/analyze_annotation/', '', request.path)
+        #ajax_url = re.sub('/analysis/', '', request.path)
         img = Image.objects.filter(id=int(request.POST['imageId']))
         crowd_annotation_json = ''
         res = {}
