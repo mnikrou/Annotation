@@ -9,7 +9,7 @@ def get_image_by_page_number(page_num, count, user):
     else:
         annotated_image_ids = ImageAnnotation.objects.filter(
             user__groups__name='EXPERT_USERS').values_list('image')
-        images = Image.objects.filter(id__in=annotated_image_ids)
+        images = Image.objects.filter(id__in=annotated_image_ids).order_by('order')
     p = Paginator(images, count)
     img = p.page(page_num)
     return img
