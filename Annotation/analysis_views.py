@@ -56,3 +56,13 @@ def get_user_annotation(request):
             res = {'crowd_image_url': imgUrl, 'ged': distance}
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
+
+@login_required
+def all_user_analysis(request, image_id):
+    ajax_url = re.sub('/analyze_all_users/' + image_id + '/', '', request.path)
+    img = Image.objects.filter(id=image_id)
+    crowd_users = User.objects.filter(
+        Q(groups__name='TRAINED_POWER_USERS') | Q(groups__name='UNTRAINED_POWER_USERS'))
+    c = {'imageId': int(image_id), 'image_url': img[0].img.url,
+         'crowd_users': crowd_users, 'ajaxUrl': ajax_url}
+    return render(request, 'analyze_all_users.html', c)

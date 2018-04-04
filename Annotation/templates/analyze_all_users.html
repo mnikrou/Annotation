@@ -1,0 +1,88 @@
+{% extends 'base_cpanel.html' %} {% load static %} {% block content %}
+<link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="{% static 'scripts/chart/Chart.min.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var ctx = document.getElementById("chart").getContext("2d");
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+    });
+
+    function get_all_user_annotations() {
+        $.ajax({
+            type: 'POST',
+            url: '{{ ajaxUrl }}/get_user_annotation/',
+            data: {
+                'imageId': '{{imageId}}',
+                'crowd_user_id': $("#cmbUsers").val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (data) {
+                jsonResponse = JSON.parse(data);
+                $("#imgCrowduser").attr("src", jsonResponse.crowd_image_url);
+                $("#ged").text(jsonResponse.ged);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
+            }
+        });
+    }
+</script>
+
+<body>
+    <div class="inner" style="min-height:1200px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Annotation Analysis</h2>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div id="divImage" class="col-md-6" style="text-align: center;margin-bottom: 30px;">
+                <img src="{{ image_url }}" alt="">
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div style="text-align: center">
+                <canvas id="chart" width="200" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</body> {% endblock %}

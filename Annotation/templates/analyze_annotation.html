@@ -1,7 +1,12 @@
 {% extends 'base_cpanel.html' %} {% load static %} {% block content %}
 <link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="{% static 'scripts/chart/Chart.min.js' %}"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+
     function get_user_annotation() {
         $.ajax({
             type: 'POST',
@@ -60,6 +65,8 @@
                 <h4 id="ged" style="color:red;"></h4>
             </div>
         </div>
+        <br/>
+        <a href="{% url 'all_user_analysis' imageId %}" class="btn btn-primary">Analyze all users </a>
         <br/>
     </div>
 </body> {% endblock %}
