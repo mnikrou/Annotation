@@ -12,6 +12,8 @@ import json
 from GraphEditDistance.Graph.graph import *
 import GraphEditDistance.graph_edit_distance as ged
 
+user_geds = list()
+
 
 @login_required
 def analysis(request, image_id):
@@ -57,12 +59,35 @@ def get_user_annotation(request):
         return HttpResponse(json.dumps(res))
     return HttpResponseForbidden('allowed only via Ajax')
 
+
 @login_required
 def all_user_analysis(request, image_id):
-    ajax_url = re.sub('/analyze_all_users/' + image_id + '/', '', request.path)
+    ajax_url = re.sub('/all_user_analysis/' + image_id + '/', '', request.path)
+    user_geds = list()
     img = Image.objects.filter(id=image_id)
-    crowd_users = User.objects.filter(
-        Q(groups__name='TRAINED_POWER_USERS') | Q(groups__name='UNTRAINED_POWER_USERS'))
-    c = {'imageId': int(image_id), 'image_url': img[0].img.url,
-         'crowd_users': crowd_users, 'ajaxUrl': ajax_url}
+    expert_ia = ImageAnnotation.objects.filter(
+        user__groups__name='EXPERT_USERS', image=img)
+    if expert_ia:
+        expert_graph = Graph.from_json(
+            json.loads(expert_ia[0].annotation_json))
+    crowd_ia_list = ImageAnnotation.objects.filter(Q(user__groups__name='TRAINED_POWER_USERS') | Q(
+        user__groups__name='UNTRAINED_POWER_USERS'), image=img)
+    for crowd_ia in crowd_ia_list:
+        crow_graph = Graph.from_json(json.loads(crowd_ia.annotation_json))
+        distance = ged.compareGraphs(expert_graph, crow_graph)
+        user_geds.append({'user_id': crowd_ia.user_id, 'user_name': crowd_ia.user.username,
+                          'user_group': crowd_ia.user.groups.values()[0]['name'], 'disntance': distance})
+    c = {'imageId': int(image_id),
+         'image_url': img[0].img.url, 'ajaxUrl': ajax_url}
     return render(request, 'analyze_all_users.html', c)
+
+
+@login_required
+def get_user_geds(request):
+    if request.is_ajax():
+        user_geds = list()
+        img = Image.objects.filter(id=int(request.POST['imageId']))
+        if request.POST['userGroup'] == 'all':
+            user_geds = UserGED.objects.filter(image=img).values('ged', 'user__username')
+        return HttpResponse(json.dumps(list(user_geds)))
+    return HttpResponseForbidden('allowed only via Ajax')

@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'^user_directory_delete/$', views.user_directory_delete, name='user_directory_delete'),
     url(r'^delete_directory/$', views.delete_directory, name='delete_directory'),
     url(r'^all_user_analysis/(?P<image_id>.+)/$', analysis_views.all_user_analysis, name='all_user_analysis'),
+    url(r'^get_user_geds/$', analysis_views.get_user_geds, name='get_user_geds'),
+    url(r'^calculate_user_ged/$', views.calculate_user_ged, name='calculate_user_ged'),
+    url(r'^calculateGeds/$', views.calculateGeds, name='calculateGeds'),
 ]
 
 if settings.DEBUG is True:

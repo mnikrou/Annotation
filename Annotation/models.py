@@ -24,3 +24,11 @@ class ImageAnnotation(models.Model):
 
     class Meta:
         db_table = 'ImageAnnotations'
+
+class UserGED(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    image = models.ForeignKey(Image, on_delete=models.PROTECT)
+    ged = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'UserGed'

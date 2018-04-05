@@ -15,6 +15,8 @@ from django.conf import settings
 import os
 from PIL import Image as PImage
 import shutil
+from GraphEditDistance.Graph.graph import *
+import GraphEditDistance.graph_edit_distance as ged
 
 
 def login(request):
@@ -124,4 +126,36 @@ def delete_directory(request):
             return HttpResponse('')
         else:
             return HttpResponse('not correct user')
+    return HttpResponseForbidden('allowed only via Ajax')
+
+
+@login_required
+@permission_required('Annotation.add_userged', raise_exception=True)
+def calculate_user_ged(request):
+    ajax_url = re.sub('/calculate_user_ged/', '', request.path)
+    c = {'ajaxUrl': ajax_url}
+    return render(request, 'ged_calculation.html', c)
+
+
+@login_required
+def calculateGeds(request):
+    if request.is_ajax():
+        UserGED.objects.all().delete()
+        images = Image.objects.all()
+        for img in images:
+            expert_ia = ImageAnnotation.objects.filter(
+                user__groups__name='EXPERT_USERS', image=img)
+            if expert_ia:
+                expert_graph = Graph.from_json(
+                    json.loads(expert_ia[0].annotation_json))
+            crowd_ia_list = ImageAnnotation.objects.filter(Q(user__groups__name='TRAINED_POWER_USERS') | Q(
+                user__groups__name='UNTRAINED_POWER_USERS'), image=img)
+            for crowd_ia in crowd_ia_list:
+                crow_graph = Graph.from_json(
+                    json.loads(crowd_ia.annotation_json))
+                distance = ged.compareGraphs(expert_graph, crow_graph)
+                uged = UserGED(image=img, user=crowd_ia.user, ged=distance)
+                uged.save()
+        return HttpResponse('')
+
     return HttpResponseForbidden('allowed only via Ajax')

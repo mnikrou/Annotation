@@ -66,6 +66,13 @@
                     {% endif %}
                 </li>
                 <li class="panel">
+                    {% if perms.auth.add_userged %}
+                    <a href="{% url 'calculate_user_ged' %}">
+                        <i class="icon-table"></i> calculate user GED
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="panel">
                     {% if request.user.username == 'miladn' %}
                     <a href="{% url 'user_directory_delete' %}">
                         <i class="icon-table"></i> delete directory

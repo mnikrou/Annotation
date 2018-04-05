@@ -4,14 +4,25 @@
 <script type="text/javascript" src="{% static 'scripts/chart/Chart.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var ctx = document.getElementById("chart").getContext("2d");
+        get_geds();
+        //draw_chart(ctx);
+    });
+
+    function draw_chart(ctx, data) {
+        console.log('data: ', data);
+        userNames = [];
+        values = [];
+        for (var i = 0; i < data.length; i++) {
+            userNames.push(data[i].user__username);
+            values.push(data[i].ged);
+        }
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                labels: userNames,
                 datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
+                    label: 'GEDs',
+                    data: values,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -41,22 +52,21 @@
                 }
             }
         });
+    }
 
-    });
-
-    function get_all_user_annotations() {
+    function get_geds() {
         $.ajax({
             type: 'POST',
-            url: '{{ ajaxUrl }}/get_user_annotation/',
+            url: '{{ ajaxUrl }}/get_user_geds/',
             data: {
                 'imageId': '{{imageId}}',
-                'crowd_user_id': $("#cmbUsers").val(),
+                'userGroup': $("#cmbUserGroups").val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             success: function (data) {
                 jsonResponse = JSON.parse(data);
-                $("#imgCrowduser").attr("src", jsonResponse.crowd_image_url);
-                $("#ged").text(jsonResponse.ged);
+                var ctx = document.getElementById("chart").getContext("2d");
+                draw_chart(ctx, jsonResponse);
             },
             error: function (xhr, textStatus, errorThrown) {
                 alert("error: " + xhr + "-" + textStatus + "-" + errorThrown);
@@ -80,8 +90,18 @@
         </div>
         <br/>
         <div class="row">
+            <div class="body collapse in">
+                <select name="cmbUserGroups" id="cmbUserGroups" onchange="get_geds();" class="btn dropdown-toggle">
+                    <option value="all">All</option>
+                    <option value="TRAINED_POWER_USERS">Trained users</option>
+                    <option value="UNTRAINED_POWER_USERS">Untrained users</option>
+                </select>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
             <div style="text-align: center">
-                <canvas id="chart" width="200" height="200"></canvas>
+                <canvas id="chart" style="width:400px;height: 400px;"></canvas>
             </div>
         </div>
     </div>
