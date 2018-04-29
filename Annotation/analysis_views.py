@@ -89,5 +89,9 @@ def get_user_geds(request):
         img = Image.objects.filter(id=int(request.POST['imageId']))
         if request.POST['userGroup'] == 'all':
             user_geds = UserGED.objects.filter(image=img).values('ged', 'user__username')
+        elif request.POST['userGroup'] == 'TRAINED_POWER_USERS':
+            user_geds = UserGED.objects.filter(Q(image=img,user__groups__name='TRAINED_POWER_USERS')).values('ged', 'user__username')
+        elif request.POST['userGroup'] == 'UNTRAINED_POWER_USERS':
+            user_geds = UserGED.objects.filter(Q(image=img,user__groups__name='UNTRAINED_POWER_USERS')).values('ged', 'user__username')
         return HttpResponse(json.dumps(list(user_geds)))
     return HttpResponseForbidden('allowed only via Ajax')
