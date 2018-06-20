@@ -48,16 +48,10 @@ def create_cost_matrix(g1, g2):
 
     for i in range(m):
         for j in range(m):
-            if i == j:
-                cost_mat[i + n][j] = insert_cost()
-            else:
                 cost_mat[i + n][j] = float('inf')
 
     for i in range(n):
         for j in range(n):
-            if i == j:
-                cost_mat[j][i + m] = delete_cost()
-            else:
                 cost_mat[j][i + m] = float('inf')
 
     return cost_mat
