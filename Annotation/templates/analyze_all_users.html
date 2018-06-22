@@ -12,9 +12,12 @@
         console.log('data: ', data);
         userNames = [];
         values = [];
-        for (var i = 0; i < data.length; i++) {
-            userNames.push(data[i].user__username);
-            values.push(data[i].ged);
+        colors = [];
+        $("#avg").text(data.avg);
+        for (var i = 0; i < data.user_geds.length; i++) {
+            userNames.push(data.user_geds[i].user__username);
+            values.push(data.user_geds[i].ged);
+            colors.push('#0000FF');
         }
         var myChart = new Chart(ctx, {
             type: 'bar',
@@ -23,7 +26,9 @@
                 datasets: [{
                     label: 'GEDs',
                     data: values,
-                    //backgroundColor: [
+                    //fillColor: "rgba(255, 206, 86, 0.2)",
+                    //strokeColor: "rgba(255, 99, 132, 0.2)", 
+                    backgroundColor: colors,
                     //     'rgba(255, 99, 132, 0.2)',
                     //     'rgba(54, 162, 235, 0.2)',
                     //     'rgba(255, 206, 86, 0.2)',
@@ -54,6 +59,13 @@
                 }
             }
         });
+        // for (b in myChart.datasets[0].bars){
+        //     b.fillColor = "green";
+        // }
+        // myChart.datasets[0].bars.forEach(function(bar) {
+        //     bar.fillColor = "green";
+        // });
+        myChart.update();
     }
 
     function get_geds() {
@@ -104,6 +116,12 @@
         <div class="row">
             <div style="text-align: center">
                 <canvas id="chart" style="width:400px;height: 400px;"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div style="text-align: center">
+                <h4 style="color:blue;">Average :</h4>
+                <h4 id="avg" style="color:red;"></h4>
             </div>
         </div>
     </div>

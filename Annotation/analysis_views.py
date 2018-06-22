@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 import json
 from GraphEditDistance.Graph.graph import *
 import GraphEditDistance.graph_edit_distance as ged
+from django.db.models import Avg
 
 user_geds = list()
 
@@ -86,12 +87,18 @@ def all_user_analysis(request, image_id):
 def get_user_geds(request):
     if request.is_ajax():
         user_geds = list()
+        avg = 0
         img = Image.objects.filter(id=int(request.POST['imageId']))
         if request.POST['userGroup'] == 'all':
             user_geds = UserGED.objects.filter(image=img).values('ged', 'user__username')
+            avg = UserGED.objects.filter(image=img).aggregate(Avg('ged'))
         elif request.POST['userGroup'] == 'TRAINED_POWER_USERS':
             user_geds = UserGED.objects.filter(Q(image=img,user__groups__name='TRAINED_POWER_USERS')).values('ged', 'user__username')
+            avg = UserGED.objects.filter(Q(image=img,user__groups__name='TRAINED_POWER_USERS')).aggregate(Avg('ged'))
         elif request.POST['userGroup'] == 'UNTRAINED_POWER_USERS':
             user_geds = UserGED.objects.filter(Q(image=img,user__groups__name='UNTRAINED_POWER_USERS')).values('ged', 'user__username')
-        return HttpResponse(json.dumps(list(user_geds)))
+            avg = UserGED.objects.filter(Q(image=img,user__groups__name='UNTRAINED_POWER_USERS')).aggregate(Avg('ged'))
+        response_data = json.dumps(
+            {'user_geds': list(user_geds), 'avg': avg['ged__avg']})
+        return HttpResponse(response_data)
     return HttpResponseForbidden('allowed only via Ajax')
