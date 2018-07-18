@@ -159,3 +159,10 @@ def calculateGeds(request):
         return HttpResponse('')
 
     return HttpResponseForbidden('allowed only via Ajax')
+
+
+@login_required
+def analyze_all_images(request):
+    ajax_url = re.sub('/analyze_all_images/', '', request.path)
+    c = {'ajaxUrl': ajax_url}
+    return render(request, 'analyze_all_images.html', c)

@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^all_user_analysis/(?P<image_id>.+)/$', analysis_views.all_user_analysis, name='all_user_analysis'),
     url(r'^get_user_geds/$', analysis_views.get_user_geds, name='get_user_geds'),
     url(r'^calculate_user_ged/$', views.calculate_user_ged, name='calculate_user_ged'),
+    url(r'^analyze_all_images/$', views.analyze_all_images, name='analyze_all_images'),
     url(r'^calculateGeds/$', views.calculateGeds, name='calculateGeds'),
 ]
 

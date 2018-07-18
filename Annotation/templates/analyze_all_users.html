@@ -20,7 +20,7 @@
             colors.push('#0000FF');
         }
         var myChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'horizontalBar',
             data: {
                 labels: userNames,
                 datasets: [{
@@ -53,8 +53,12 @@
                 scales: {
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true
-                        }
+                            beginAtZero: true,
+			    stacked: true
+                        },
+            		yAxes: [{
+                	    stacked: true
+            		}]
                     }]
                 }
             }
@@ -115,7 +119,7 @@
         <br/>
         <div class="row">
             <div style="text-align: center">
-                <canvas id="chart" style="width:400px;height: 400px;"></canvas>
+                <canvas id="chart" style="width:400px;height: 600px;"></canvas>
             </div>
         </div>
         <div class="row">
