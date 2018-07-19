@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^calculate_user_ged/$', views.calculate_user_ged, name='calculate_user_ged'),
     url(r'^analyze_all_images/$', views.analyze_all_images, name='analyze_all_images'),
     url(r'^calculateGeds/$', views.calculateGeds, name='calculateGeds'),
+    url(r'^get_images_geds/$', analysis_views.get_images_geds, name='get_images_geds'),
 ]
 
 if settings.DEBUG is True:
