@@ -8,11 +8,11 @@ import math
 def compareGraphs(g1, g2):
     m = Munkres()
     cost_matrix = create_cost_matrix(g1, g2)
-    print_matrix(cost_matrix)
+    #print_matrix(cost_matrix)
     index = m.compute(cost_matrix)
     costs = [cost_matrix[i][j] for i, j in index]
     distance = sum(costs) / g1.size()
-    print(str(distance) + ' - ' + str(costs))
+    #print(str(distance) + ' - ' + str(costs))
     return distance
 
 

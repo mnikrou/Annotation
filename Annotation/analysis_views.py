@@ -115,17 +115,17 @@ def get_images_geds(request):
         user_geds = list()
         avg = 0
         if request.POST['userGroup'] == 'all':
-            images_geds = UserGED.objects.values('image__id').annotate(
-                avgGed=Avg('ged')).order_by('image__id')
+            images_geds = UserGED.objects.filter(~Q(image__order__in=[1, 2, 3])).values('image__order').annotate(
+                avgGed=Avg('ged')).order_by('image__order')
             avg = UserGED.objects.aggregate(Avg('ged'))
         elif request.POST['userGroup'] == 'TRAINED_POWER_USERS':
-            images_geds = UserGED.objects.filter(Q(user__groups__name='TRAINED_POWER_USERS')).values(
-                'image__id').annotate(avgGed=Avg('ged')).order_by('image__id')
-            avg = UserGED.objects.filter(
-                Q(user__groups__name='TRAINED_POWER_USERS')).aggregate(Avg('ged'))
+            images_geds = UserGED.objects.filter(~Q(image__order__in=[1, 2, 3]) & Q(user__groups__name='TRAINED_POWER_USERS')).values(
+                'image__order').annotate(avgGed=Avg('ged')).order_by('image__order')
+            avg = UserGED.objects.filter(~Q(image__order__in=[1, 2, 3]) &
+                                         Q(user__groups__name='TRAINED_POWER_USERS')).aggregate(Avg('ged'))
         elif request.POST['userGroup'] == 'UNTRAINED_POWER_USERS':
-            images_geds = UserGED.objects.filter(Q(user__groups__name='UNTRAINED_POWER_USERS')).values(
-                'image__id').annotate(avgGed=Avg('ged')).order_by('image__id')
+            images_geds = UserGED.objects.filter(~Q(image__order__in=[1, 2, 3]) & Q(user__groups__name='UNTRAINED_POWER_USERS')).values(
+                'image__order').annotate(avgGed=Avg('ged')).order_by('image__order')
             avg = UserGED.objects.filter(
                 Q(user__groups__name='UNTRAINED_POWER_USERS')).aggregate(Avg('ged'))
         response_data = json.dumps(

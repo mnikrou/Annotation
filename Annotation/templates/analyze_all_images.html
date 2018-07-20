@@ -15,7 +15,7 @@
         colors = [];
         $("#avg").text(data.avg);
         for (var i = 0; i < data.images_geds.length; i++) {
-            Images.push(data.images_geds[i].image__id);
+            Images.push(data.images_geds[i].image__order);
             values.push(data.images_geds[i].avgGed);
             colors.push('#0000FF');
         }

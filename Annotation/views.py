@@ -142,17 +142,23 @@ def calculateGeds(request):
     if request.is_ajax():
         UserGED.objects.all().delete()
         images = Image.objects.all()
+        #images = Image.objects.filter(id=55).all()
         for img in images:
+            print('i: '+ str(img.id))
             expert_ia = ImageAnnotation.objects.filter(
                 user__groups__name='EXPERT_USERS', image=img)
             if expert_ia:
+                eg_json = expert_ia[0].annotation_json.replace('\n', '')
                 expert_graph = Graph.from_json(
-                    json.loads(expert_ia[0].annotation_json))
+                    json.loads(eg_json))
             crowd_ia_list = ImageAnnotation.objects.filter(Q(user__groups__name='TRAINED_POWER_USERS') | Q(
                 user__groups__name='UNTRAINED_POWER_USERS'), image=img)
+            #crowd_ia_list = ImageAnnotation.objects.filter(Q(user__id=33), image=img)
             for crowd_ia in crowd_ia_list:
+                print('i: '+ str(img.id) + '   u: ' + str(crowd_ia.user.id))
+                g_json = crowd_ia.annotation_json.replace('\n', '')
                 crow_graph = Graph.from_json(
-                    json.loads(crowd_ia.annotation_json))
+                    json.loads(g_json))
                 distance = ged.compareGraphs(expert_graph, crow_graph)
                 uged = UserGED(image=img, user=crowd_ia.user, ged=distance)
                 uged.save()
