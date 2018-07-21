@@ -2,6 +2,7 @@
 <link href="{% static 'css/layout/bootstrap.css' %}" rel="stylesheet" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="{% static 'scripts/chart/Chart.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/chart/chartjs-plugin-annotation.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         get_geds();
@@ -44,6 +45,20 @@
                         yAxes: [{
                             stacked: true
                         }]
+                    }]
+                },
+                annotation: {
+                    annotations: [{
+                        type: 'line',
+                        mode: 'vertical',
+                        scaleID: 'x-axis-0',
+                        value: data.avg,
+                        borderColor: 'green',
+                        borderWidth: 5,
+                        label: {
+                            enabled: true,
+                            content: 'Average'
+                        }
                     }]
                 }
             }
